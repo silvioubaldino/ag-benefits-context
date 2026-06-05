@@ -14,15 +14,16 @@ owner: silvioubaldino
 ## Estado do produto
 - **Produto:** ag-benefits — clube de benefícios local por assinatura
 - **Repos:** context (este) · api · web · mobile
-- **Fase atual:** Produto → Requisitos (PROD em draft; REQ a iniciar)
+- **Fase atual:** Requisitos → Design (PROD e REQ em draft; AYDs a iniciar)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
 |--------|----|-----------|--------|--------|----------------|
 | Produto      | PROD-001 | Visão & estratégia | draft   | —        | REQ-001 |
-| Requisitos   | REQ-001  | Requisitos         | draft   | PROD-001 | (AYDs a definir) |
+| Requisitos   | REQ-001  | Requisitos (MVP)   | draft   | PROD-001 | (AYDs a definir) |
 | Design       | AYD-001  | (a iniciar)        | —       | REQ-001  | — |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
+| Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Glossário    | GLO      | Linguagem ubíqua   | approved | —       | — |
 
 ## Ordem de leitura para a IA

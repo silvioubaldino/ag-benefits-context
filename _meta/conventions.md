@@ -98,3 +98,18 @@ Ao alterar um doc:
   citar entidades/campos/contratos; a explicação ao redor segue em português.
 - Em contratos (AYD/ADR): payloads, campos e valores de enum em inglês
   (ex.: `SubscriptionStatus: active | past_due | canceled`).
+
+## 9. Changelog (formato e política)
+
+Vale para o `changelog.md` de cada repo.
+
+- **Ordem cronológica invertida:** o mais **recente fica no topo**; o mais antigo, embaixo.
+  Toda alteração nova entra **acima** das anteriores.
+- **SemVer:** versões no formato `vMAJOR.MINOR.PATCH`.
+- **Trabalho não publicado fica em `## [Não lançado]`** (sempre o bloco do topo).
+  Enquanto não há commit/PR, todas as mudanças se acumulam aí — **sem data e sem versão**.
+- **No commit/PR**, o bloco `## [Não lançado]` é renomeado para
+  `## [dd-MM-yyyy - vX.Y.Z]` (ex.: `## [04-06-2026 - v0.0.1]`), e um novo
+  `## [Não lançado]` vazio é aberto acima dele para as próximas mudanças.
+- Dentro de um bloco, agrupe por categoria: **Adicionado / Alterado / Removido /
+  Decisões / Propagação**.
