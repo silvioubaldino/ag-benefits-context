@@ -19,6 +19,16 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 ## [Não lançado]
 
 
+## [05-06-2026 - v0.0.3]
+
+### Adicionado
+- **conventions.md §10** — Convenções de diagramas: padrão Mermaid embutido no `.md`;
+  regras de onde cada diagrama mora (C4 nível 1–2 no ADR, sequência cross-repo no AYD);
+  subordinação (texto vence), ciclo de vida e propagação herdados do doc-pai.
+- **AYD-000-template.md** — bloco `sequenceDiagram` vazio na seção "Fluxo cross-repo".
+- **AYD-001-example.md** — diagrama Mermaid de sequência preenchido como exemplo do
+  fluxo de upload de mídia.
+
 ## [04/06/2026 - v0.0.2]
 
 ### Adicionado

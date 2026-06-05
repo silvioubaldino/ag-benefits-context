@@ -42,6 +42,20 @@ Entidade `Mídia` (ver GLO): id, owner, status(uploading|ready), metadados.
 ## Fluxo cross-repo
 web/mobile pedem URL assinada → upload direto ao storage → api confirma e marca `ready`.
 
+```mermaid
+sequenceDiagram
+  participant C as Cliente (web/mobile)
+  participant A as API
+  participant S as Storage
+  C->>A: POST /media/upload-url {filename, contentType, sizeBytes}
+  A-->>C: { uploadUrl, mediaId, expiresAt }
+  C->>S: PUT arquivo (uploadUrl)
+  S-->>C: 200 OK
+  C->>A: POST /media/{mediaId}/complete
+  A->>A: marca Mídia como "ready"
+  A-->>C: { status: ready }
+```
+
 ## Decisões relacionadas
 ADR-001 (storage com URL assinada em vez de proxy pela API).
 
