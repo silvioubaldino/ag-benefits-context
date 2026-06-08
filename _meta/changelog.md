@@ -18,6 +18,40 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 
 ## [Não lançado]
 
+### Adicionado
+- **ADR-001** — Topologia cross-repo do MVP (C4 containers): mobile + api + DB + sistemas
+  externos (Firebase, Asaas); admin/métricas api-only; diagrama de containers em Mermaid;
+  fronteiras de fonte da verdade (identidade no Firebase, billing no Asaas, domínio no DB).
+- **ADR-002** — Autenticação/autorização via Firebase: protocolo ID token → api verifica →
+  resolve `Subscriber` por `firebase_uid`; autorização por `role` (custom claim:
+  `subscriber`/`admin`); admin protegido pelo mesmo mecanismo (sem auth separado no MVP).
+- **ADR-003** — Pagamentos e ciclo de `Subscription` via **Asaas**, atrás de abstração
+  `PaymentGateway`; recorrência por cartão + Pix Automático (boleto só avulso); webhooks
+  dirigem o `SubscriptionStatus` de forma idempotente; mapa de estados gateway → status.
+
+### Removido
+- **ADR-001-example.md** e **AYD-001-example.md** — exemplos de scaffold removidos por
+  colisão de id com os docs reais (mesmo critério já aplicado ao `PDR-001-example.md`).
+
+### Alterado
+- **manifest.md** — grafo de documentos passa a listar ADR-001/002/003; fase atual ajustada
+  para "Design (ADRs de fundação aceitos; AYDs a iniciar)"; diagrama de relações inclui a
+  camada de fundação arquitetural.
+
+### Decisões
+- **Stack de fundação do MVP:** Firebase (auth), Asaas (pagamentos), DB próprio; push
+  **adiado** (sem provedor definido); linguagem/framework de cada serviço fica como **TDR no
+  repo do serviço**, fora do repo de contexto.
+- **Pagamentos:** Pix Automático (BACEN, em operação desde 2025) como recorrência nativa BR
+  ao lado de cartão; boleto recorrente descartado (não há débito automático). Gateway local
+  Asaas escolhido; Stripe (já com Pix recorrente em 2026) e Iugu descartados para o MVP, mas
+  reavaliáveis via abstração `PaymentGateway`.
+
+### Propagação
+- ADR-001/002/003 em `accepted`; serão referenciados (`related`) pelos próximos AYDs a
+  partir do AYD-001. Sem `children` ativos ainda (AYDs a iniciar).
+- Pendência de compliance LGPD (transferência internacional via Firebase; PII no Asaas)
+  registrada nos ADRs como candidata a PDR/nota de compliance.
 
 ## [05-06-2026 - v0.0.3]
 
