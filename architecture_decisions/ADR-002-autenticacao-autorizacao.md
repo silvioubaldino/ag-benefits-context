@@ -21,8 +21,8 @@ superseded_by: null
 O RF-01 exige cadastro, login, sessão segura e recuperação de acesso; o RNF-03 exige
 autenticação forte sem assumirmos o peso de guardar credenciais. Precisamos de um protocolo
 de auth que **atravessa repos** (mobile ↔ api) e de um modelo de **autorização** que
-distinga o `Subscriber` da **operação interna** (endpoints admin/métricas api-only, RF-13/
-RF-14) e que **não impeça**, no futuro, o papel `PartnerOperator`. Decisão cross-repo →
+distinga o `Subscriber`, a **operação interna** (endpoints admin/métricas api-only, RF-13/
+RF-14) e o **`PartnerOperator`** (app do `Partner`, RF-15/RF-16). Decisão cross-repo →
 ADR. A topologia que a contém está no [ADR-001](ADR-001-topologia-cross-repo.md).
 
 ## Decisão
@@ -47,14 +47,16 @@ nunca trata o token como perfil — só como prova de identidade.
 | `role` | Quem | Acesso |
 |--------|------|--------|
 | `subscriber` (default) | `Subscriber` do app | Endpoints do app (`Catalog`, `Redemption`, histórico…). Sujeito a RN-01 (`Subscription` `active`). |
+| `partner_operator` | `PartnerOperator` (pessoa do `Partner`) | App do `Partner`: métricas do próprio `Partner` (RF-15/RF-16) e participação no `Redemption` (fluxo a definir). Acesso **escopado ao seu `Partner`**. |
 | `admin` | Operação interna | Endpoints internos de `Partner`/`PartnershipContract`/`Benefit` e métricas (RF-13/RF-14). |
 
 - O papel `admin` é atribuído por processo interno controlado (set de custom claim), **não**
   por self-service.
 - Endpoints internos exigem `role = admin`; o mesmo mecanismo de verificação de token vale
   para todos — **não** há um segundo sistema de auth para o admin no MVP.
-- `PartnerOperator` **não** entra no MVP, mas o modelo de `role` já comporta adicioná-lo
-  depois sem trocar o protocolo.
+- `PartnerOperator` **entra no MVP** (app do `Partner`); o modelo de `role` já o comportava,
+  sem trocar o protocolo. Seu acesso é **limitado ao próprio `Partner`** — além do `role`, a
+  api aplica **autorização por recurso** (o `PartnerOperator` só lê dados do seu `Partner`).
 
 ## Alternativas consideradas
 | Opção | Prós | Contras | Por que (não) escolhida |

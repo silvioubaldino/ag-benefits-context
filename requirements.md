@@ -4,7 +4,7 @@ type: requirements
 title: Requisitos do produto
 status: draft
 created: 2026-06-04
-updated: 2026-06-04
+updated: 2026-06-08
 owner: silvioubaldino
 parents: [PROD-001]
 children: []
@@ -15,9 +15,11 @@ superseded_by: null
 
 # Requisitos
 
-> Refina o [PROD-001](product.md). Escopo do MVP: **app mobile do `Subscriber` + `api`**,
-> em **uma `Region` piloto**. `Redemption` confirmado por **QR exibido pelo `Partner`**
-> (o `Subscriber` lê). Termos canônicos no [GLO](_meta/glossary.md).
+> Refina o [PROD-001](product.md). Escopo do MVP: **apps mobile do `Subscriber` e do
+> `Partner` (`PartnerOperator`) + `api`**, em **uma `Region` piloto** — possivelmente um
+> **único app mobile com áreas de `Subscriber` e `Partner`**, a confirmar por viabilidade
+> técnica (decisão local via TDR no `mobile`). `Redemption` confirmado por **QR exibido pelo
+> `Partner`** (o `Subscriber` lê). Termos canônicos no [GLO](_meta/glossary.md).
 
 ## Funcionais (RF)
 | ID | Requisito | Prioridade (MoSCoW) | Critério de aceite |
@@ -36,6 +38,8 @@ superseded_by: null
 | RF-12 | `Subscriber` vê histórico de `Redemption`s e `Savings` acumulado | Must | "Você já economizou R$ X" = soma dos `Savings`; lista de usos com data/`Partner` |
 | RF-13 | Administração interna de `Partner`/`PartnershipContract`/`Benefit` e geração de QR | Must | Equipe cadastra/edita via processo interno (sem UI dedicada); cada `Benefit` recebe um QR resolvível |
 | RF-14 | Consulta/exportação interna de métricas agregadas | Should | Negócio obtém `Redemption`s e `Savings` por `Partner`/`Region`/período (consulta/export interna, sem UI) |
+| RF-15 | `PartnerOperator` autentica e acessa o app mobile do `Partner` | Must | Login do `PartnerOperator`; acesso restrito ao seu `Partner` (`role` `partner_operator`) |
+| RF-16 | `PartnerOperator` vê as métricas do próprio `Partner` no app | Must | App mostra `Redemption`s e `Savings` do próprio `Partner` por período; base do valor comercial da parceria. Participação na confirmação do `Redemption` conforme fluxo a definir (ver Questões em aberto) |
 
 ## Não-funcionais (RNF)
 | ID | Categoria | Requisito | Alvo |
@@ -69,7 +73,11 @@ superseded_by: null
 - **Legais:** LGPD para dados pessoais, de uso e de localização.
 - **Sem processamento da compra:** o produto não é meio de pagamento; impacta o `Savings`
   (ver RN-05).
-- **Sem superfícies de `Partner`/Negócio no MVP:** cadastro e métricas são internos (RF-13/RF-14).
+- **Cadastro e métricas de negócio internos:** o cadastro de `Partner`/`PartnershipContract`/
+  `Benefit` (RF-13) e as métricas agregadas cross-`Partner` do Negócio (RF-14) seguem
+  **internos/api-only**. O `Partner` tem **app mobile** (`PartnerOperator`) para autenticar e
+  ver **as métricas do próprio `Partner`** (RF-15/RF-16); **não** há painel web nem
+  self-cadastro do `Partner` no MVP.
 - **Geografia:** uma única `Region` piloto no MVP.
 
 ## Escopo do MVP
@@ -77,15 +85,19 @@ superseded_by: null
   - App **mobile** do `Subscriber`: conta/login, contratar/cancelar `Subscription`,
     `Catalog` por `Region`, `Redemption` por leitura de QR, confirmação com `Savings`,
     histórico + `Savings` acumulado.
+  - App **mobile** do `Partner` (`PartnerOperator`): login e visualização das **métricas do
+    próprio `Partner`** (`Redemption`s/`Savings`); participação na confirmação do `Redemption`
+    conforme o fluxo a definir (ver Questões em aberto). Possivelmente **o mesmo app** do
+    `Subscriber` com áreas distintas (viabilidade técnica → TDR no `mobile`).
   - **`api`:** identidade, billing/`Subscription`, `Catalog`, registro confiável de
     `Redemption` + `Savings`, armazenamento e consulta interna de métricas.
   - Administração **interna** de `Partner`/`PartnershipContract`/`Benefit` + geração de QR.
   - **1 `Region`** piloto.
 - **Fora (por enquanto):**
-  - Painel do `Partner` e app/ação do `PartnerOperator` (validação no balcão).
-  - Backoffice com UI dedicada.
+  - **Painel web** do `Partner` e **self-cadastro** do `Partner` (cadastro segue interno — RF-13).
+  - Backoffice interno com UI dedicada (admin segue api-only).
   - **Web** do `Subscriber`.
-  - Outros mecanismos de `Redemption` (código de cupom, app do parceiro) — só QR no MVP.
+  - Outros mecanismos de `Redemption` (ex.: código de cupom) — só QR no MVP.
   - Múltiplas `Region`s / expansão geográfica.
   - Pontos, cashback, pagamento da compra no app.
 
