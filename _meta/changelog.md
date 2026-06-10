@@ -19,12 +19,15 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 ## [Não lançado]
 
 ### Adicionado
-- **ADR-001** — Topologia cross-repo do MVP (C4 containers): mobile + api + DB + sistemas
-  externos (Firebase, Asaas); admin/métricas api-only; diagrama de containers em Mermaid;
-  fronteiras de fonte da verdade (identidade no Firebase, billing no Asaas, domínio no DB).
+- **ADR-001** — Topologia cross-repo do MVP (C4 containers): apps mobile do `Subscriber` e do
+  `Partner` + api + DB + sistemas externos (Firebase, Asaas); admin e métricas de negócio
+  cross-`Partner` api-only, métricas do próprio `Partner` no app do `Partner`; diagrama de
+  containers em Mermaid; fronteiras de fonte da verdade (identidade no Firebase, billing no
+  Asaas, domínio no DB).
 - **ADR-002** — Autenticação/autorização via Firebase: protocolo ID token → api verifica →
   resolve `Subscriber` por `firebase_uid`; autorização por `role` (custom claim:
-  `subscriber`/`admin`); admin protegido pelo mesmo mecanismo (sem auth separado no MVP).
+  `subscriber`/`partner_operator`/`admin`, `partner_operator` escopado ao próprio `Partner`);
+  admin protegido pelo mesmo mecanismo (sem auth separado no MVP).
 - **ADR-003** — Pagamentos e ciclo de `Subscription` via **Asaas**, atrás de abstração
   `PaymentGateway`; recorrência por cartão + Pix Automático (boleto só avulso); webhooks
   dirigem o `SubscriptionStatus` de forma idempotente; mapa de estados gateway → status.
@@ -37,8 +40,18 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 - **manifest.md** — grafo de documentos passa a listar ADR-001/002/003; fase atual ajustada
   para "Design (ADRs de fundação aceitos; AYDs a iniciar)"; diagrama de relações inclui a
   camada de fundação arquitetural.
+- **REQ-001** — **app do `Partner`** entra no escopo do MVP (correção, não incremento): novos
+  RF-15 (`PartnerOperator` autentica/acessa o app) e RF-16 (vê métricas do próprio `Partner`);
+  restrições e "Dentro/Fora" ajustados (sai "app do `PartnerOperator` fora"; permanece fora só
+  painel web e self-cadastro do `Partner`).
 
 ### Decisões
+- **App do `Partner` no MVP:** haverá um **app mobile do `Partner`** (`PartnerOperator`) —
+  motivado pelo **valor comercial das métricas** ao `Partner` e ao time de vendas. Correção de
+  uma lacuna do desenho anterior (que o deixava fora). **Possivelmente o mesmo app do
+  `Subscriber`** com áreas distintas — viabilidade técnica decidida em **TDR local no
+  `mobile`**. Mecanismo de confirmação do `Redemption` (QR) segue **em aberto** (próxima
+  decisão). Ativa o `role: partner_operator` (ADR-002) e um container cliente no ADR-001.
 - **Stack de fundação do MVP:** Firebase (auth), Asaas (pagamentos), DB próprio; push
   **adiado** (sem provedor definido); linguagem/framework de cada serviço fica como **TDR no
   repo do serviço**, fora do repo de contexto.
