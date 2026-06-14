@@ -3,7 +3,7 @@ id: MANIFEST
 type: meta
 title: Manifesto / Índice do produto
 status: approved
-updated: 2026-06-11
+updated: 2026-06-14
 owner: silvioubaldino
 ---
 
@@ -14,14 +14,14 @@ owner: silvioubaldino
 ## Estado do produto
 - **Produto:** ag-benefits — clube de benefícios local por assinatura
 - **Repos:** context (este) · api · web · mobile
-- **Fase atual:** Design (PROD e REQ em draft; ADRs de fundação aceitos; AYDs a iniciar)
+- **Fase atual:** Design (PROD e REQ em draft; ADRs de fundação aceitos; AYD-001 em draft)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
 |--------|----|-----------|--------|--------|----------------|
 | Produto      | PROD-001 | Visão & estratégia | draft   | —        | REQ-001 |
-| Requisitos   | REQ-001  | Requisitos (MVP)   | draft   | PROD-001 | (AYDs a definir) |
-| Design       | AYD-001  | (a iniciar)        | —       | REQ-001  | — |
+| Requisitos   | REQ-001  | Requisitos (MVP)   | draft   | PROD-001 | AYD-001 |
+| Design       | AYD-001  | Onboarding do Subscriber (identidade/conta) | draft | REQ-001 | SPEC-001@api, SPEC-001@mobile |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |
@@ -39,10 +39,10 @@ owner: silvioubaldino
 ## Diagrama de relações
 ```
 PROD-001
-   ├─ REQ-001 ─ AYD-001 ─┬─ SPEC-001@api ─ PLAN-001@api
-   │                     ├─ SPEC-001@web ─ PLAN-001@web
-   │                     └─ SPEC-001@mobile ─ PLAN-001@mobile
+   ├─ REQ-001 ─ AYD-001 (onboarding Subscriber) ─┬─ SPEC-001@api ─ PLAN-001@api
+   │                                             └─ SPEC-001@mobile ─ PLAN-001@mobile
    └─ ROAD-001
+   (web fora do MVP do Subscriber; AYDs futuros geram outras SPECs)
 
 Fundação arquitetural (referenciada pelos AYDs):
    ADR-001 (topologia C4) ─┬─ ADR-002 (auth/Firebase)
