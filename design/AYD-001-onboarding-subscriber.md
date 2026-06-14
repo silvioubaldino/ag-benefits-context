@@ -2,7 +2,7 @@
 id: AYD-001
 type: design
 title: Onboarding do Subscriber (identidade/conta)
-status: draft
+status: approved
 created: 2026-06-14
 updated: 2026-06-14
 owner: silvioubaldino
