@@ -21,9 +21,9 @@ superseded_by: null
 ## Contexto
 O MVP precisa de uma topologia de serviços definida **antes** dos AYDs por feature, para
 que cada AYD assuma a fundação como dada e detalhe apenas seus contratos. O escopo
-(REQ-001) é: **app mobile do `Subscriber` + `api`**, em **1 `Region`** piloto, com
-administração de `Partner`/`PartnershipContract`/`Benefit` e consulta de métricas
-**internas, api-only** (sem UI dedicada). O produto delega identidade e pagamento a
+(REQ-001) é: **apps mobile do `Subscriber` e do `Partner` + `api`**, em **1 `Region`**
+piloto, com administração interna de `Partner`/`PartnershipContract`/`Benefit`, **métricas de
+negócio cross-`Partner` api-only** e **métricas do próprio `Partner` no app do `Partner`**. O produto delega identidade e pagamento a
 terceiros (não somos meio de pagamento — ver [PROD-001](../product.md) e
 [PDR-001](../product_decisions/PDR-001-savings-calculation.md)), então a topologia precisa
 nomear esses sistemas externos e as fronteiras de "fonte da verdade".
@@ -35,13 +35,16 @@ pagamento têm ADR próprio ([ADR-002](ADR-002-autenticacao-autorizacao.md),
 eles se relacionam.
 
 ## Decisão
-A topologia do MVP tem **dois containers próprios** (mobile e api), **um banco de dados** e
-**dois sistemas externos** (Firebase, Asaas). A superfície de administração e métricas é a
-**própria api** (endpoints internos), sem container de UI dedicado.
+A topologia do MVP tem **clientes mobile** (app do `Subscriber` e app do `Partner` —
+possivelmente um único app com áreas distintas), a **api**, **um banco de dados** e **dois
+sistemas externos** (Firebase, Asaas). A **administração interna** (cadastro) e as **métricas
+de negócio cross-`Partner`** ficam na **própria api** (endpoints internos, sem UI dedicada); o
+`Partner` acessa **as métricas do próprio `Partner`** pelo app do `Partner`.
 
 | Container | Repo | Responsabilidade |
 |-----------|------|------------------|
-| **Mobile App** | `mobile` | Único cliente do `Subscriber`: conta/login, `Subscription`, `Catalog` por `Region`, `Redemption` por leitura de QR, histórico/`Savings`. |
+| **App do `Subscriber`** | `mobile` | Cliente do `Subscriber`: conta/login, `Subscription`, `Catalog` por `Region`, `Redemption` por leitura de QR, histórico/`Savings`. |
+| **App do `Partner`** | `mobile` | Cliente do `PartnerOperator`: login e métricas do próprio `Partner`; participação no `Redemption` (fluxo a definir). **Possivelmente o mesmo app do `Subscriber`** com áreas distintas — viabilidade técnica decidida em TDR local. |
 | **API** | `api` | Núcleo de domínio: identidade (verifica token), billing/`Subscription`, `Catalog`, registro confiável de `Redemption`+`Savings`, métricas internas, e os **webhooks** dos externos. Fonte da verdade do domínio. |
 | **Banco de dados** | `api` | Persiste `Subscriber`, `Subscription`, `Partner`, `PartnershipContract`, `Benefit`, `Redemption`, `Region`. |
 
@@ -58,7 +61,8 @@ nunca redefinido por nós.
 **Administração e métricas (RF-13/RF-14):** são endpoints **internos da api**, protegidos
 por papel (ver ADR-002). No MVP, métricas são **consulta/exportação sobre o DB operacional**
 — sem data warehouse/analytics dedicado (evitar over-engineering; `Region` já é dimensão de
-primeira classe).
+primeira classe). O **app do `Partner`** expõe um recorte dessas métricas **limitado ao
+próprio `Partner`** (RF-15/RF-16), pela mesma api e protegido por `role` (ver ADR-002).
 
 **Comunicação:** mobile → api por **HTTPS/REST**, autenticado por *Firebase ID token*. Os
 externos chamam a api de volta por **webhooks** (entrada de primeira classe: a api expõe
@@ -68,8 +72,9 @@ endpoint, valida assinatura e processa de forma **idempotente** — liga no RNF-
 
 ```mermaid
 flowchart TB
-  subgraph cliente[Cliente]
-    M["Mobile App<br/>(Subscriber)"]
+  subgraph cliente[Clientes mobile]
+    M["App do Subscriber"]
+    P["App do Partner<br/>(PartnerOperator)"]
   end
 
   subgraph agb["ag-benefits — sistema"]
@@ -86,6 +91,8 @@ flowchart TB
 
   M -->|"signup / login"| FB
   M -->|"HTTPS/REST + Firebase ID token"| API
+  P -->|"login"| FB
+  P -->|"HTTPS/REST + ID token (role partner_operator)"| API
   API -->|"verifica ID token"| FB
   API --> DB
   API -->|"cria customer / assinatura / cobrança"| AS
@@ -104,9 +111,9 @@ flowchart TB
 ## Consequências / trade-offs
 - **Positivas:** superfície enxuta; responsabilidades e fontes de verdade nítidas; AYDs por
   feature herdam esta base sem reabri-la; webhooks centralizam a sincronização de estado.
-- **Negativas:** operação interna sem UI no MVP (cadastro/métricas via processo/endpoint);
-  dependência de dois fornecedores externos (lock-in mitigado por abstração no ADR-003 e
-  pela fronteira de identidade no ADR-002).
+- **Negativas:** cadastro de `Partner`/`Benefit` e métricas de negócio cross-`Partner` sem UI
+  no MVP (via processo/endpoint interno); dependência de dois fornecedores externos (lock-in
+  mitigado por abstração no ADR-003 e pela fronteira de identidade no ADR-002).
 - **Compliance (LGPD, RNF-04):** Firebase e Asaas processam PII; há **transferência
   internacional** no caso do Firebase. Registrar base legal/consentimento e tratar
   residência de dados (candidato a PDR/nota de compliance).

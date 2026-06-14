@@ -3,7 +3,7 @@ id: MANIFEST
 type: meta
 title: Manifesto / Índice do produto
 status: approved
-updated: 2026-06-08
+updated: 2026-06-11
 owner: silvioubaldino
 ---
 
@@ -24,9 +24,11 @@ owner: silvioubaldino
 | Design       | AYD-001  | (a iniciar)        | —       | REQ-001  | — |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
-| Decisão arq  | ADR-001  | Topologia cross-repo (C4) | accepted | — | ADR-002, ADR-003 |
+| Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |
+| Decisão arq  | ADR-001  | Topologia cross-repo (C4) | accepted | — | ADR-002, ADR-003, ADR-004 |
 | Decisão arq  | ADR-002  | Autenticação (Firebase)   | accepted | — | — |
 | Decisão arq  | ADR-003  | Pagamentos/Subscription (Asaas) | accepted | — | — |
+| Decisão arq  | ADR-004  | Resolução do Redemption (QR TOTP) | accepted | — | — |
 | Glossário    | GLO      | Linguagem ubíqua   | approved | —       | — |
 
 ## Ordem de leitura para a IA
@@ -44,6 +46,7 @@ PROD-001
 
 Fundação arquitetural (referenciada pelos AYDs):
    ADR-001 (topologia C4) ─┬─ ADR-002 (auth/Firebase)
-                           └─ ADR-003 (pagamentos/Asaas)
+                           ├─ ADR-003 (pagamentos/Asaas)
+                           └─ ADR-004 (Redemption: QR TOTP) ─ PDR-002 (antifraude)
 (PDR / ADR / GLO referenciados transversalmente por todos)
 ```
