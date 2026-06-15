@@ -3,7 +3,7 @@ id: META-changelog
 type: meta
 title: Changelog do repo de contexto
 status: approved
-updated: 2026-06-04
+updated: 2026-06-14
 owner: silvioubaldino
 ---
 
@@ -19,6 +19,11 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 ## [Não lançado]
 
 ### Adicionado
+- **AYD-001** — Onboarding do `Subscriber` (identidade/conta), primeira fatia vertical do
+  produto. Atende RF-01; escopo só identidade (sem billing/`Subscription`). Materializa o
+  protocolo da ADR-002 em endpoints (`GET/PATCH /me`), com provisionamento implícito e
+  idempotente do `Subscriber` por `firebase_uid` no 1º acesso. Afeta `api` e `mobile`
+  (gera SPEC-001@api e SPEC-001@mobile); diagrama de sequência cross-repo em Mermaid.
 - **ADR-001** — Topologia cross-repo do MVP (C4 containers): apps mobile do `Subscriber` e do
   `Partner` + api + DB + sistemas externos (Firebase, Asaas); admin e métricas de negócio
   cross-`Partner` api-only, métricas do próprio `Partner` no app do `Partner`; diagrama de
