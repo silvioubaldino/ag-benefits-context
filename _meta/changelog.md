@@ -18,6 +18,8 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 
 ## [Não lançado]
 
+## [15-06-2026 - v0.1.0]
+
 ### Adicionado
 - **ADR-001** — Topologia cross-repo do MVP (C4 containers): apps mobile do `Subscriber` e do
   `Partner` + api + DB + sistemas externos (Firebase, Asaas); admin e métricas de negócio
@@ -31,27 +33,39 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 - **ADR-003** — Pagamentos e ciclo de `Subscription` via **Asaas**, atrás de abstração
   `PaymentGateway`; recorrência por cartão + Pix Automático (boleto só avulso); webhooks
   dirigem o `SubscriptionStatus` de forma idempotente; mapa de estados gateway → status.
+- **ADR-004** — Resolução do `Redemption`/QR: **`Partner` gera QR TOTP** (segredo por
+  `Partner`, server-side), **`Subscriber` lê e confirma**, api valida (TOTP single-use na
+  janela → RN-01 → RN-02 → RN-04 → `Savings`) e grava. Geo como sinal, não portão. Fecha os
+  dois objetivos anti-fraude (sem omissão do `Partner`, sem resgate remoto do `Subscriber`).
 
 ### Removido
 - **ADR-001-example.md** e **AYD-001-example.md** — exemplos de scaffold removidos por
   colisão de id com os docs reais (mesmo critério já aplicado ao `PDR-001-example.md`).
 
 ### Alterado
-- **manifest.md** — grafo de documentos passa a listar ADR-001/002/003; fase atual ajustada
-  para "Design (ADRs de fundação aceitos; AYDs a iniciar)"; diagrama de relações inclui a
-  camada de fundação arquitetural.
+- **manifest.md** — grafo de documentos passa a listar ADR-001/002/003/004; fase atual
+  ajustada para "Design (ADRs de fundação aceitos; AYDs a iniciar)"; diagrama de relações
+  inclui a camada de fundação arquitetural.
 - **REQ-001** — **app do `Partner`** entra no escopo do MVP (correção, não incremento): novos
   RF-15 (`PartnerOperator` autentica/acessa o app) e RF-16 (vê métricas do próprio `Partner`);
   restrições e "Dentro/Fora" ajustados (sai "app do `PartnerOperator` fora"; permanece fora só
   painel web e self-cadastro do `Partner`).
+- **REQ-001** — mecanismo do `Redemption` definido (ADR-004): RF-08 e RNF-05 passam a QR
+  **TOTP** gerado pelo app do `Partner`; RF-13 troca "geração de QR" por "provisionamento do
+  segredo TOTP do `Partner`"; questão em aberto "Resolução do QR" marcada como resolvida.
 
 ### Decisões
 - **App do `Partner` no MVP:** haverá um **app mobile do `Partner`** (`PartnerOperator`) —
   motivado pelo **valor comercial das métricas** ao `Partner` e ao time de vendas. Correção de
   uma lacuna do desenho anterior (que o deixava fora). **Possivelmente o mesmo app do
   `Subscriber`** com áreas distintas — viabilidade técnica decidida em **TDR local no
-  `mobile`**. Mecanismo de confirmação do `Redemption` (QR) segue **em aberto** (próxima
-  decisão). Ativa o `role: partner_operator` (ADR-002) e um container cliente no ADR-001.
+  `mobile`**. Ativa o `role: partner_operator` (ADR-002) e um container cliente no ADR-001.
+- **Mecanismo do `Redemption` (ADR-004):** o **`Partner` gera um QR TOTP** (segredo por
+  `Partner`, mantido server-side) e o **`Subscriber` lê e confirma**; a api valida. Escolhido
+  por resolver os dois objetivos anti-fraude num único scan: o `Partner` **não omite** (registro
+  nasce server-side no scan do `Subscriber`) e o `Subscriber` **não resgata remoto** (TOTP
+  rotativo + single-use mata foto/compartilhamento). Geo é sinal de auditoria, não veto. A
+  **política** de repetição/limites (RN-04) fica para o **PDR de antifraude** (a definir).
 - **Stack de fundação do MVP:** Firebase (auth), Asaas (pagamentos), DB próprio; push
   **adiado** (sem provedor definido); linguagem/framework de cada serviço fica como **TDR no
   repo do serviço**, fora do repo de contexto.
@@ -61,8 +75,9 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
   reavaliáveis via abstração `PaymentGateway`.
 
 ### Propagação
-- ADR-001/002/003 em `accepted`; serão referenciados (`related`) pelos próximos AYDs a
-  partir do AYD-001. Sem `children` ativos ainda (AYDs a iniciar).
+- ADR-001/002/003/004 em `accepted`; serão referenciados (`related`) pelos próximos AYDs a
+  partir do AYD-001 (em especial o AYD do `Redemption`, que detalha a sequência cross-repo do
+  ADR-004). Sem `children` ativos ainda (AYDs a iniciar).
 - Pendência de compliance LGPD (transferência internacional via Firebase; PII no Asaas)
   registrada nos ADRs como candidata a PDR/nota de compliance.
 
