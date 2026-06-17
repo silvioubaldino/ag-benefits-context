@@ -19,75 +19,21 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 ## [Não lançado]
 
 ### Adicionado
-- **AYD-001** — Onboarding do `Subscriber` (identidade/conta), primeira fatia vertical do
-  produto. Atende RF-01; escopo só identidade (sem billing/`Subscription`). Materializa o
-  protocolo da ADR-002 em endpoints (`GET/PATCH /me`), com provisionamento implícito e
-  idempotente do `Subscriber` por `firebase_uid` no 1º acesso. Afeta `api` e `mobile`
-  (gera SPEC-001@api e SPEC-001@mobile); diagrama de sequência cross-repo em Mermaid.
-- **ADR-001** — Topologia cross-repo do MVP (C4 containers): apps mobile do `Subscriber` e do
-  `Partner` + api + DB + sistemas externos (Firebase, Asaas); admin e métricas de negócio
-  cross-`Partner` api-only, métricas do próprio `Partner` no app do `Partner`; diagrama de
-  containers em Mermaid; fronteiras de fonte da verdade (identidade no Firebase, billing no
-  Asaas, domínio no DB).
-- **ADR-002** — Autenticação/autorização via Firebase: protocolo ID token → api verifica →
-  resolve `Subscriber` por `firebase_uid`; autorização por `role` (custom claim:
-  `subscriber`/`partner_operator`/`admin`, `partner_operator` escopado ao próprio `Partner`);
-  admin protegido pelo mesmo mecanismo (sem auth separado no MVP).
-- **ADR-003** — Pagamentos e ciclo de `Subscription` via **Asaas**, atrás de abstração
-  `PaymentGateway`; recorrência por cartão + Pix Automático (boleto só avulso); webhooks
-  dirigem o `SubscriptionStatus` de forma idempotente; mapa de estados gateway → status.
-- **ADR-004** — Resolução do `Redemption` via **QR rotativo (TOTP) gerado pelo app do
-  `Partner`**: `Subscriber` escaneia, identifica o `Partner` e escolhe o `Benefit`; sem
-  etapa prévia de "pedir cupom" no MVP; segredo TOTP é por `Partner` (não por `Benefit`),
-  funciona com `Partner` offline.
-- **PDR-002** — Antifraude/repetição de `Redemption` (RN-04): máx. 1 `Redemption`/`Benefit`/
-  `Subscriber`/24h; teto de 5 `Redemption`s/dia por `Subscriber`; teto de plausibilidade de
-  `purchase_amount` por `Benefit`; janela TOTP de 30s com tolerância de 1 janela.
-- **RF-17** (REQ-001) — app do `Partner` exibe o QR rotativo (TOTP).
-
-### Removido
-- **ADR-001-example.md** e **AYD-001-example.md** — exemplos de scaffold removidos por
-  colisão de id com os docs reais (mesmo critério já aplicado ao `PDR-001-example.md`).
+- **ADR-005 + AYD-002** — Baseline de observabilidade (stack gratuita no Google; contrato `traceparent` mobile→api e vocabulário de métricas). Gera SPEC-002@api/@mobile.
+- **AYD-001** — Onboarding do `Subscriber` (identidade): `GET/PATCH /me` com provisionamento idempotente por `firebase_uid`. Gera SPEC-001@api/@mobile.
+- **ADR-004 + PDR-002 + RF-17** — `Redemption` via QR rotativo (TOTP) do app `Partner`, com limites de antifraude.
+- **ADR-001/002/003** — Topologia C4 do MVP, autenticação Firebase (ID token + `role`) e pagamentos/`Subscription` via Asaas (`PaymentGateway`).
 
 ### Alterado
-- **manifest.md** — grafo de documentos passa a listar ADR-001/002/003/004 e PDR-002; fase
-  atual ajustada para "Design (ADRs de fundação aceitos; AYDs a iniciar)"; diagrama de
-  relações inclui a camada de fundação arquitetural.
-- **REQ-001** — **app do `Partner`** entra no escopo do MVP (correção, não incremento): novos
-  RF-15 (`PartnerOperator` autentica/acessa o app) e RF-16 (vê métricas do próprio `Partner`);
-  restrições e "Dentro/Fora" ajustados (sai "app do `PartnerOperator` fora"; permanece fora só
-  painel web e self-cadastro do `Partner`).
-- **REQ-001** — mecanismo de `Redemption` fechado (ADR-004/PDR-002): RF-08 reescrito (QR
-  rotativo identifica o `Partner`, `Benefit` escolhido depois pelo `Subscriber`); RF-13
-  passa a ser provisionamento de **segredo TOTP por `Partner`** (não mais "QR por
-  `Benefit`"); RNF-05 referencia o mecanismo concreto; RN-04 fechado com os limites do
-  PDR-002; "Questões em aberto" todas marcadas como decididas.
+- **REQ-001** — app do `Partner` entra no MVP (RF-15/16); mecanismo de `Redemption` fechado por ADR-004/PDR-002.
+- **manifest.md** — grafo/diagrama atualizados com a fundação arquitetural e a observabilidade; AYD-001 → `approved`.
 
-### Decisões
-- **App do `Partner` no MVP:** haverá um **app mobile do `Partner`** (`PartnerOperator`) —
-  motivado pelo **valor comercial das métricas** ao `Partner` e ao time de vendas. Correção de
-  uma lacuna do desenho anterior (que o deixava fora). **Possivelmente o mesmo app do
-  `Subscriber`** com áreas distintas — viabilidade técnica decidida em **TDR local no
-  `mobile`**. Ativa o `role: partner_operator` (ADR-002) e um container cliente no ADR-001.
-- **Mecanismo do `Redemption` (ADR-004):** QR **rotativo (TOTP)** exibido pelo app do
-  `Partner`, lido pelo `Subscriber` — sem etapa de "pedir cupom" no MVP. Enquadramento:
-  fraude relevante no MVP é **poluição de métrica**, não extração financeira (produto não
-  processa a compra). Risco residual aceito: omissão **pré-ação** do `Partner` fica sem
-  mitigação técnica, coberto por incentivo/UX e monitoramento (RNF-06); revisitar via novo
-  ADR (reintroduzindo etapa `pending`) se essa fraude aparecer no piloto.
-- **Stack de fundação do MVP:** Firebase (auth), Asaas (pagamentos), DB próprio; push
-  **adiado** (sem provedor definido); linguagem/framework de cada serviço fica como **TDR no
-  repo do serviço**, fora do repo de contexto.
-- **Pagamentos:** Pix Automático (BACEN, em operação desde 2025) como recorrência nativa BR
-  ao lado de cartão; boleto recorrente descartado (não há débito automático). Gateway local
-  Asaas escolhido; Stripe (já com Pix recorrente em 2026) e Iugu descartados para o MVP, mas
-  reavaliáveis via abstração `PaymentGateway`.
+### Removido
+- Exemplos de scaffold (`ADR-001-example.md`, `AYD-001-example.md`) por colisão de id.
 
 ### Propagação
-- ADR-001/002/003/004 e PDR-002 em `accepted`; serão referenciados (`related`) pelos
-  próximos AYDs a partir do AYD-001. Sem `children` ativos ainda (AYDs a iniciar).
-- Pendência de compliance LGPD (transferência internacional via Firebase; PII no Asaas)
-  registrada nos ADRs como candidata a PDR/nota de compliance.
+- ADR-005/AYD-002 → SPEC-002@api criada (com PLAN-002 e `conventions/observability.md`); SPEC-002@mobile a criar.
+- Pendência LGPD (transferência internacional via Firebase/Asaas) registrada nos ADRs como candidata a PDR.
 
 ## [05-06-2026 - v0.0.3]
 
