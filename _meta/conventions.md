@@ -3,7 +3,7 @@ id: META-conventions
 type: meta
 title: Convenções da documentação
 status: approved
-updated: 2025-01-01
+updated: 2026-06-17
 ---
 
 # Convenções da documentação
@@ -98,24 +98,27 @@ Ao alterar um doc:
   citar entidades/campos/contratos; a explicação ao redor segue em português.
 - Em contratos (AYD/ADR): payloads, campos e valores de enum em inglês
   (ex.: `SubscriptionStatus: active | past_due | canceled`).
+- **Exceção — changelog:** o `changelog.md` é escrito em **inglês** (segue o padrão
+  Keep a Changelog, uma convenção consolidada em inglês). Ver §9.
 
 ## 9. Changelog (formato e política)
 
 Vale para o `changelog.md` de cada repo.
 
+- **Idioma: inglês.** O changelog é a exceção à regra de docs em PT-BR (§8): segue o padrão
+  [Keep a Changelog](https://keepachangelog.com) + [SemVer](https://semver.org), convenções
+  consolidadas em inglês.
 - **Ordem cronológica invertida:** o mais **recente fica no topo**; o mais antigo, embaixo.
   Toda alteração nova entra **acima** das anteriores.
 - **SemVer:** versões no formato `vMAJOR.MINOR.PATCH`.
-- **Trabalho não publicado fica em `## [Não lançado]`** (sempre o bloco do topo).
+- **Trabalho não publicado fica em `## Unreleased`** (sempre o bloco do topo).
   Enquanto não há commit/PR, todas as mudanças se acumulam aí — **sem data e sem versão**.
-- **No commit/PR**, o bloco `## [Não lançado]` é renomeado para
+- **No commit/PR**, o bloco `## Unreleased` é renomeado para
   `## [dd-MM-yyyy - vX.Y.Z]` (ex.: `## [04-06-2026 - v0.0.1]`), e um novo
-  `## [Não lançado]` vazio é aberto acima dele para as próximas mudanças.
-- Dentro de um bloco, agrupe por categoria: **Adicionado / Alterado / Removido /
-  Decisões / Propagação**.
+  `## Unreleased` vazio é aberto acima dele para as próximas mudanças.
 - **Uma linha por PR:** cada entrada resume, em **uma única linha**, o que o PR entrega —
   generalista e focada no que foi implementado, **sem detalhes de implementação nem do
-  framework de docs**; referencie o PR (ex.: `[PR#02](url)`).
+  framework de docs**; referencie o PR (ex.: `[PR#02](url)`). Sem subdivisão por categoria.
 
 ## 10. Convenções de diagramas
 

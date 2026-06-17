@@ -3,20 +3,26 @@ id: META-changelog
 type: meta
 title: Changelog do repo de contexto
 status: approved
-updated: 2026-06-14
+updated: 2026-06-17
 owner: silvioubaldino
 ---
 
-# Changelog — Contexto
+# Changelog — Context
 
-Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
-É aqui que mora a auditoria do "porquê" dos documentos **vivos**.
+All notable changes to the shared docs (PROD, REQ, AYD, ROAD, decisions) are documented
+here. This is where the audit trail of the "why" behind the **living** documents lives.
 
-> **Ordem:** mais recente **no topo**; mais antigo embaixo (ver `conventions.md` §9).
-> **Versão:** SemVer. Enquanto não há commit/PR, tudo fica em **[Não lançado]** (sem data/versão).
-> No commit/PR, **[Não lançado]** vira **`[dd-MM-yyyy - vX.Y.Z]`** e abre-se um novo **[Não lançado]** acima.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this
+repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Não lançado]
+> Order: most recent on top; one line per PR, referencing it (see `conventions.md` §9).
+> While there is no commit/PR, everything stays under `## Unreleased` (no date/version).
+> On the commit/PR, `## Unreleased` becomes `## [dd-MM-yyyy - vX.Y.Z]` and a new empty
+> `## Unreleased` is opened above it.
+>
+> _Note: entries below predating this convention remain in PT-BR / category format._
+
+## Unreleased
 
 ### Adicionado
 - **ADR-005 + AYD-002** — Baseline de observabilidade (stack gratuita no Google; contrato `traceparent` mobile→api e vocabulário de métricas). Gera SPEC-002@api/@mobile.
