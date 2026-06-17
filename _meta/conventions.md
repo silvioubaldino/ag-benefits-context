@@ -113,6 +113,9 @@ Vale para o `changelog.md` de cada repo.
   `## [Não lançado]` vazio é aberto acima dele para as próximas mudanças.
 - Dentro de um bloco, agrupe por categoria: **Adicionado / Alterado / Removido /
   Decisões / Propagação**.
+- **Uma linha por PR:** cada entrada resume, em **uma única linha**, o que o PR entrega —
+  generalista e focada no que foi implementado, **sem detalhes de implementação nem do
+  framework de docs**; referencie o PR (ex.: `[PR#02](url)`).
 
 ## 10. Convenções de diagramas
 
