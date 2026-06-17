@@ -116,6 +116,8 @@ Vale para o `changelog.md` de cada repo.
 - **Uma linha por PR:** cada entrada resume, em **uma única linha**, o que o PR entrega —
   generalista e focada no que foi implementado, **sem detalhes de implementação nem do
   framework de docs**; referencie o PR (ex.: `[PR#02](url)`).
+- **Changelog sempre em inglês:** excepcionalmente ao §8 (docs em PT-BR), o `changelog.md` de
+  cada repo é escrito **em inglês** — é o artefato mais exposto a leitura externa/ferramentas.
 
 ## 10. Convenções de diagramas
 

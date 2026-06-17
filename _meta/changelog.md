@@ -1,177 +1,185 @@
 ---
 id: META-changelog
 type: meta
-title: Changelog do repo de contexto
+title: Context repo changelog
 status: approved
 updated: 2026-06-14
 owner: silvioubaldino
 ---
 
-# Changelog — Contexto
+# Changelog — Context
 
-Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
-É aqui que mora a auditoria do "porquê" dos documentos **vivos**.
+Record of changes to the shared docs (PROD, REQ, AYD, ROAD, decisions). This is where the
+audit trail of the "why" behind the **living** documents lives.
 
-> **Ordem:** mais recente **no topo**; mais antigo embaixo (ver `conventions.md` §9).
-> **Versão:** SemVer. Enquanto não há commit/PR, tudo fica em **[Não lançado]** (sem data/versão).
-> No commit/PR, **[Não lançado]** vira **`[dd-MM-yyyy - vX.Y.Z]`** e abre-se um novo **[Não lançado]** acima.
+> **Order:** newest **on top**; oldest at the bottom (see `conventions.md` §9).
+> **Versioning:** SemVer. Until there's a commit/PR, everything stays in **[Unreleased]**
+> (no date/version).
+> On commit/PR, **[Unreleased]** becomes **`[dd-MM-yyyy - vX.Y.Z]`** and a new
+> **[Unreleased]** opens above it.
 
-## [Não lançado]
+## [Unreleased]
 
-### Adicionado
-- **ADR-005** — Observabilidade (logs, métricas, traces e dashboards) com **stack gratuita**
-  consolidada no Google: api (Cloud Run) → Cloud Logging/Monitoring/Trace (RED nativo do Cloud
-  Run, logs JSON via `slog`, OpenTelemetry); mobile → Firebase Crashlytics/Performance/GA4;
-  dash técnico no Cloud Monitoring e dash de produto em Metabase sobre o Postgres. Fixa o
-  padrão de instrumentação cross-repo (schema de log, correlação por `traceparent`, vocabulário
-  de métricas, SLOs dos RNF-01/06/07) e a fronteira de portabilidade (OTel/stdout). Estende a
-  topologia C4 do ADR-001 com diagrama de containers de telemetria. Status: draft.
-- **AYD-002** — Baseline de observabilidade: materializa o ADR-005 numa fatia transversal que
-  instrumenta `api` e `mobile` antes das próximas features. Contrato novo cross-repo = header
-  de correlação `traceparent` (W3C) `mobile → api`; define schema de log, vocabulário inicial
-  de métricas/eventos e diagrama de sequência. Gera SPEC-002@api e SPEC-002@mobile.
-- **AYD-001** — Onboarding do `Subscriber` (identidade/conta), primeira fatia vertical do
-  produto. Atende RF-01; escopo só identidade (sem billing/`Subscription`). Materializa o
-  protocolo da ADR-002 em endpoints (`GET/PATCH /me`), com provisionamento implícito e
-  idempotente do `Subscriber` por `firebase_uid` no 1º acesso. Afeta `api` e `mobile`
-  (gera SPEC-001@api e SPEC-001@mobile); diagrama de sequência cross-repo em Mermaid.
-- **ADR-001** — Topologia cross-repo do MVP (C4 containers): apps mobile do `Subscriber` e do
-  `Partner` + api + DB + sistemas externos (Firebase, Asaas); admin e métricas de negócio
-  cross-`Partner` api-only, métricas do próprio `Partner` no app do `Partner`; diagrama de
-  containers em Mermaid; fronteiras de fonte da verdade (identidade no Firebase, billing no
-  Asaas, domínio no DB).
-- **ADR-002** — Autenticação/autorização via Firebase: protocolo ID token → api verifica →
-  resolve `Subscriber` por `firebase_uid`; autorização por `role` (custom claim:
-  `subscriber`/`partner_operator`/`admin`, `partner_operator` escopado ao próprio `Partner`);
-  admin protegido pelo mesmo mecanismo (sem auth separado no MVP).
-- **ADR-003** — Pagamentos e ciclo de `Subscription` via **Asaas**, atrás de abstração
-  `PaymentGateway`; recorrência por cartão + Pix Automático (boleto só avulso); webhooks
-  dirigem o `SubscriptionStatus` de forma idempotente; mapa de estados gateway → status.
-- **ADR-004** — Resolução do `Redemption` via **QR rotativo (TOTP) gerado pelo app do
-  `Partner`**: `Subscriber` escaneia, identifica o `Partner` e escolhe o `Benefit`; sem
-  etapa prévia de "pedir cupom" no MVP; segredo TOTP é por `Partner` (não por `Benefit`),
-  funciona com `Partner` offline.
-- **PDR-002** — Antifraude/repetição de `Redemption` (RN-04): máx. 1 `Redemption`/`Benefit`/
-  `Subscriber`/24h; teto de 5 `Redemption`s/dia por `Subscriber`; teto de plausibilidade de
-  `purchase_amount` por `Benefit`; janela TOTP de 30s com tolerância de 1 janela.
-- **RF-17** (REQ-001) — app do `Partner` exibe o QR rotativo (TOTP).
+### Added
+- **ADR-005** — Observability (logs, metrics, traces, and dashboards) with a **free stack**
+  consolidated on Google: api (Cloud Run) → Cloud Logging/Monitoring/Trace (native Cloud Run
+  RED metrics, JSON logs via `slog`, OpenTelemetry); mobile → Firebase Crashlytics/Performance/
+  GA4; technical dashboard on Cloud Monitoring and product dashboard on Metabase over Postgres.
+  Sets the cross-repo instrumentation standard (log schema, `traceparent` correlation, metrics
+  vocabulary, RNF-01/06/07 SLOs) and the portability boundary (OTel/stdout). Extends the
+  ADR-001 C4 topology with a telemetry container diagram. Status: draft.
+- **AYD-002** — Observability baseline: materializes ADR-005 into a cross-cutting slice that
+  instruments `api` and `mobile` ahead of upcoming features. New cross-repo contract = the
+  `traceparent` (W3C) correlation header `mobile → api`; defines the log schema, initial
+  metrics/events vocabulary, and a sequence diagram. Generates SPEC-002@api and SPEC-002@mobile.
+- **AYD-001** — `Subscriber` onboarding (identity/account), the product's first vertical
+  slice. Covers RF-01; scope is identity only (no billing/`Subscription`). Materializes the
+  ADR-002 protocol into endpoints (`GET/PATCH /me`), with implicit, idempotent provisioning of
+  the `Subscriber` by `firebase_uid` on first access. Affects `api` and `mobile` (generates
+  SPEC-001@api and SPEC-001@mobile); cross-repo sequence diagram in Mermaid.
+- **ADR-001** — MVP cross-repo topology (C4 containers): `Subscriber` and `Partner` mobile
+  apps + api + DB + external systems (Firebase, Asaas); cross-`Partner` admin and business
+  metrics are api-only, each `Partner`'s own metrics live in the `Partner` app; container
+  diagram in Mermaid; source-of-truth boundaries (identity in Firebase, billing in Asaas,
+  domain in the DB).
+- **ADR-002** — Authentication/authorization via Firebase: ID token protocol → api verifies →
+  resolves the `Subscriber` by `firebase_uid`; authorization by `role` (custom claim:
+  `subscriber`/`partner_operator`/`admin`, `partner_operator` scoped to its own `Partner`);
+  admin protected by the same mechanism (no separate auth in the MVP).
+- **ADR-003** — Payments and `Subscription` lifecycle via **Asaas**, behind a `PaymentGateway`
+  abstraction; recurrence via card + Pix Automático (boleto is one-off only); webhooks drive
+  the `SubscriptionStatus` idempotently; gateway-state-to-status mapping.
+- **ADR-004** — `Redemption` resolution via a **rotating QR (TOTP) generated by the
+  `Partner` app**: the `Subscriber` scans it, identifies the `Partner`, and picks the
+  `Benefit` afterward; no upfront "request voucher" step in the MVP; the TOTP secret is per
+  `Partner` (not per `Benefit`), and it works with the `Partner` offline.
+- **PDR-002** — `Redemption` anti-fraud/repetition controls (RN-04): max. 1 `Redemption` per
+  `Benefit` per `Subscriber` per 24h; cap of 5 `Redemption`s/day per `Subscriber`;
+  plausibility cap on `purchase_amount` per `Benefit`; 30s TOTP window with a 1-window
+  tolerance.
+- **RF-17** (REQ-001) — the `Partner` app displays the rotating QR (TOTP).
 
-### Removido
-- **ADR-001-example.md** e **AYD-001-example.md** — exemplos de scaffold removidos por
-  colisão de id com os docs reais (mesmo critério já aplicado ao `PDR-001-example.md`).
+### Removed
+- **ADR-001-example.md** and **AYD-001-example.md** — scaffold examples removed due to ID
+  collision with the real docs (same criterion already applied to `PDR-001-example.md`).
 
-### Alterado
-- **manifest.md** — grafo passa a listar **ADR-005** e **AYD-002** (observabilidade); diagrama
-  de relações inclui o ramo de observabilidade; fase atual atualizada; **AYD-001** corrigido de
-  `draft` para `approved` (alinha o manifesto ao frontmatter do doc).
-- **manifest.md** — grafo de documentos passa a listar ADR-001/002/003/004 e PDR-002; fase
-  atual ajustada para "Design (ADRs de fundação aceitos; AYDs a iniciar)"; diagrama de
-  relações inclui a camada de fundação arquitetural.
-- **REQ-001** — **app do `Partner`** entra no escopo do MVP (correção, não incremento): novos
-  RF-15 (`PartnerOperator` autentica/acessa o app) e RF-16 (vê métricas do próprio `Partner`);
-  restrições e "Dentro/Fora" ajustados (sai "app do `PartnerOperator` fora"; permanece fora só
-  painel web e self-cadastro do `Partner`).
-- **REQ-001** — mecanismo de `Redemption` fechado (ADR-004/PDR-002): RF-08 reescrito (QR
-  rotativo identifica o `Partner`, `Benefit` escolhido depois pelo `Subscriber`); RF-13
-  passa a ser provisionamento de **segredo TOTP por `Partner`** (não mais "QR por
-  `Benefit`"); RNF-05 referencia o mecanismo concreto; RN-04 fechado com os limites do
-  PDR-002; "Questões em aberto" todas marcadas como decididas.
+### Changed
+- **manifest.md** — document graph now lists **ADR-005** and **AYD-002** (observability); the
+  relations diagram includes the observability branch; current phase updated; **AYD-001**
+  fixed from `draft` to `approved` (aligns the manifest with the doc's frontmatter).
+- **manifest.md** — document graph now lists ADR-001/002/003/004 and PDR-002; current phase
+  adjusted to "Design (foundation ADRs accepted; AYDs to start)"; relations diagram includes
+  the architectural foundation layer.
+- **REQ-001** — the **`Partner` app** enters the MVP scope (a correction, not an increment):
+  new RF-15 (`PartnerOperator` authenticates/accesses the app) and RF-16 (sees its own
+  `Partner`'s metrics); constraints and "In/Out of scope" adjusted (removes "`PartnerOperator`
+  app out of scope"; only the web panel and `Partner` self-signup remain out of scope).
+- **REQ-001** — `Redemption` mechanism closed (ADR-004/PDR-002): RF-08 rewritten (rotating QR
+  identifies the `Partner`, `Benefit` chosen afterward by the `Subscriber`); RF-13 becomes
+  provisioning of a **TOTP secret per `Partner`** (no longer "QR per `Benefit`"); RNF-05
+  references the concrete mechanism; RN-04 closed with the PDR-002 limits; all "Open
+  questions" marked as decided.
 
-### Decisões
-- **Observabilidade no MVP (ADR-005):** stack **gratuita** consolidada no Google, decidida
-  cedo para que todas as features posteriores já nasçam instrumentadas no mesmo padrão.
-  Instrumentação **portável** (logs JSON no stdout + OpenTelemetry) mantém o backend
-  substituível. Dash de produto sai do **DB de domínio** (verdade financeira: MRR/`Savings`)
-  via Metabase; engajamento/funil via GA4. Pendência LGPD (telemetria a terceiro =
-  transferência internacional) registrada como candidata a PDR/nota de compliance.
-- **App do `Partner` no MVP:** haverá um **app mobile do `Partner`** (`PartnerOperator`) —
-  motivado pelo **valor comercial das métricas** ao `Partner` e ao time de vendas. Correção de
-  uma lacuna do desenho anterior (que o deixava fora). **Possivelmente o mesmo app do
-  `Subscriber`** com áreas distintas — viabilidade técnica decidida em **TDR local no
-  `mobile`**. Ativa o `role: partner_operator` (ADR-002) e um container cliente no ADR-001.
-- **Mecanismo do `Redemption` (ADR-004):** QR **rotativo (TOTP)** exibido pelo app do
-  `Partner`, lido pelo `Subscriber` — sem etapa de "pedir cupom" no MVP. Enquadramento:
-  fraude relevante no MVP é **poluição de métrica**, não extração financeira (produto não
-  processa a compra). Risco residual aceito: omissão **pré-ação** do `Partner` fica sem
-  mitigação técnica, coberto por incentivo/UX e monitoramento (RNF-06); revisitar via novo
-  ADR (reintroduzindo etapa `pending`) se essa fraude aparecer no piloto.
-- **Stack de fundação do MVP:** Firebase (auth), Asaas (pagamentos), DB próprio; push
-  **adiado** (sem provedor definido); linguagem/framework de cada serviço fica como **TDR no
-  repo do serviço**, fora do repo de contexto.
-- **Pagamentos:** Pix Automático (BACEN, em operação desde 2025) como recorrência nativa BR
-  ao lado de cartão; boleto recorrente descartado (não há débito automático). Gateway local
-  Asaas escolhido; Stripe (já com Pix recorrente em 2026) e Iugu descartados para o MVP, mas
-  reavaliáveis via abstração `PaymentGateway`.
+### Decisions
+- **Observability in the MVP (ADR-005):** **free** stack consolidated on Google, decided
+  early so every later feature is born instrumented to the same standard. **Portable**
+  instrumentation (JSON logs on stdout + OpenTelemetry) keeps the backend swappable. The
+  product dashboard reads from the **domain DB** (financial truth: MRR/`Savings`) via
+  Metabase; engagement/funnel via GA4. LGPD concern (third-party telemetry = international
+  data transfer) logged as a candidate for a PDR/compliance note.
+- **`Partner` app in the MVP:** there will be a **`Partner` mobile app** (`PartnerOperator`)
+  — motivated by the **commercial value of the metrics** to the `Partner` and the sales team.
+  Fixes a gap in the earlier design (which left it out). **Possibly the same app as the
+  `Subscriber`'s** with distinct areas — technical feasibility decided via a **local TDR in
+  `mobile`**. Activates the `role: partner_operator` (ADR-002) and a client container in
+  ADR-001.
+- **`Redemption` mechanism (ADR-004):** **rotating QR (TOTP)** displayed by the `Partner` app,
+  scanned by the `Subscriber` — no "request voucher" step in the MVP. Framing: the fraud that
+  matters in the MVP is **metric pollution**, not financial extraction (the product doesn't
+  process the purchase). Accepted residual risk: **pre-action** omission by the `Partner` has
+  no technical mitigation, covered by incentives/UX and monitoring (RNF-06); revisit via a new
+  ADR (reintroducing a `pending` step) if this fraud shows up in the pilot.
+- **MVP foundation stack:** Firebase (auth), Asaas (payments), own DB; push notifications
+  **deferred** (no provider chosen yet); each service's language/framework is a **TDR in that
+  service's repo**, outside the context repo.
+- **Payments:** Pix Automático (BACEN, live since 2025) as the native BR recurrence alongside
+  card; recurring boleto discarded (no auto-debit). Local gateway Asaas chosen; Stripe
+  (already has recurring Pix in 2026) and Iugu discarded for the MVP, but re-evaluable via the
+  `PaymentGateway` abstraction.
 
-### Propagação
-- **ADR-005** (draft) → materializado por **AYD-002** (draft), que gera **SPEC-002@api** e
-  **SPEC-002@mobile**. SPEC-002@api criada no repo `api` (com PLAN-002 e
-  `conventions/observability.md`); **SPEC-002@mobile** a criar no repo `mobile`.
-- ADR-001/002/003/004 e PDR-002 em `accepted`; serão referenciados (`related`) pelos
-  próximos AYDs a partir do AYD-001. Sem `children` ativos ainda (AYDs a iniciar).
-- Pendência de compliance LGPD (transferência internacional via Firebase; PII no Asaas)
-  registrada nos ADRs como candidata a PDR/nota de compliance.
+### Propagation
+- **ADR-005** (draft) → materialized by **AYD-002** (draft), which generates
+  **SPEC-002@api** and **SPEC-002@mobile**. SPEC-002@api created in the `api` repo (with
+  PLAN-002 and `conventions/observability.md`); **SPEC-002@mobile** still to be created in the
+  `mobile` repo.
+- ADR-001/002/003/004 and PDR-002 are `accepted`; they'll be referenced (`related`) by the
+  next AYDs starting with AYD-001. No active `children` yet (AYDs still to start).
+- LGPD compliance concern (international transfer via Firebase; PII in Asaas) logged in the
+  ADRs as a candidate for a PDR/compliance note.
 
 ## [05-06-2026 - v0.0.3]
 
-### Adicionado
-- **conventions.md §10** — Convenções de diagramas: padrão Mermaid embutido no `.md`;
-  regras de onde cada diagrama mora (C4 nível 1–2 no ADR, sequência cross-repo no AYD);
-  subordinação (texto vence), ciclo de vida e propagação herdados do doc-pai.
-- **AYD-000-template.md** — bloco `sequenceDiagram` vazio na seção "Fluxo cross-repo".
-- **AYD-001-example.md** — diagrama Mermaid de sequência preenchido como exemplo do
-  fluxo de upload de mídia.
+### Added
+- **conventions.md §10** — Diagram conventions: Mermaid embedded in the `.md` as the
+  standard; rules for where each diagram lives (C4 level 1–2 in the ADR, cross-repo sequence
+  in the AYD); subordination (text wins), lifecycle and propagation inherited from the parent
+  doc.
+- **AYD-000-template.md** — empty `sequenceDiagram` block in the "Cross-repo flow" section.
+- **AYD-001-example.md** — Mermaid sequence diagram filled in as an example of the media
+  upload flow.
 
 ## [04/06/2026 - v0.0.2]
 
-### Adicionado
-- **PDR-001** — Cálculo do `Savings`: o `Subscriber` informa o valor da compra no
-  `Redemption`; `Benefit` define `discount_type` (`percentage`|`fixed_amount`) +
-  `discount_value` (status: accepted). Removido o `PDR-001-example.md` (colisão de id).
-- **REQ-001** preenchido: RF-01..14, RNF-01..08, RN-01..05, restrições e escopo do MVP
+### Added
+- **PDR-001** — `Savings` calculation: the `Subscriber` reports the purchase amount on the
+  `Redemption`; `Benefit` defines `discount_type` (`percentage`|`fixed_amount`) +
+  `discount_value` (status: accepted). Removed `PDR-001-example.md` (id collision).
+- **REQ-001** filled in: RF-01..14, RNF-01..08, RN-01..05, constraints, and MVP scope
   (status: draft).
 
-### Alterado
-- **REQ-001** RN-05 deixa de estar "em aberto" e passa a referenciar [PDR-001]; descontos
-  percentuais entram no escopo do MVP; RF-08 atualizado (informar valor da compra).
+### Changed
+- **REQ-001** RN-05 is no longer "open" and now references [PDR-001]; percentage discounts
+  enter the MVP scope; RF-08 updated (report the purchase amount).
 
-### Decisões
-- `Savings` autodeclarado (valor da compra informado pelo `Subscriber`) com tetos/
-  plausibilidade a definir no PDR de antifraude (RN-04). Ver [PDR-001].
-- **conventions.md §9** — formato e política do changelog (ordem invertida + SemVer).
-- **conventions.md §8** — idioma: docs em PT, código/entidades em EN; GLO define o termo
-  canônico em inglês.
-- **GLO** preenchido com a linguagem ubíqua do ag-benefits (status: approved).
-- **PROD-001** preenchido: visão, problema two-sided, personas/JTBD, posicionamento,
-  princípios e anti-escopo (status: draft).
+### Decisions
+- `Savings` self-declared (purchase amount reported by the `Subscriber`) with caps/
+  plausibility to be defined in the anti-fraud PDR (RN-04). See [PDR-001].
+- **conventions.md §9** — changelog format and policy (reverse order + SemVer).
+- **conventions.md §8** — language: docs in PT, code/entities in EN; GLO defines the
+  canonical English term.
+- **GLO** filled in with the ag-benefits ubiquitous language (status: approved).
+- **PROD-001** filled in: vision, two-sided problem, personas/JTBD, positioning, principles,
+  and anti-scope (status: draft).
 
 ## [04/06/2026 - v0.0.1]
-### Alterado
-- **GLO** traduzido para termos canônicos em inglês (`Subscriber`, `Partner`,
+### Changed
+- **GLO** translated to canonical English terms (`Subscriber`, `Partner`,
   `PartnerOperator`, `Subscription`, `SubscriptionStatus`, `PartnershipContract`,
-  `Region`, `Benefit`, `Redemption`, `Savings`, `Catalog`); definições em português.
-  Resolvida a ambiguidade de "cupom" → canonizado **`Benefit`**.
-- **PROD-001** alinhado para referenciar os termos canônicos em inglês.
-- **manifest.md** atualizado: nome do produto, fase atual e grafo de documentos.
+  `Region`, `Benefit`, `Redemption`, `Savings`, `Catalog`); definitions in Portuguese.
+  Resolved the "cupom" ambiguity → canonized as **`Benefit`**.
+- **PROD-001** aligned to reference the canonical English terms.
+- **manifest.md** updated: product name, current phase, and document graph.
 
-### Removido
-- **`RedemptionMethod`** do GLO: o mecanismo de resgate (QR/código/app) vira decisão de
-  negócio posterior; um `Benefit` terá **um** mecanismo, não vários simultâneos.
+### Removed
+- **`RedemptionMethod`** from the GLO: the redemption mechanism (QR/code/app) becomes a
+  later business decision; a `Benefit` will have **one** mechanism, not several at once.
 
-### Decisões (contexto; PDRs/ADRs formais a criar)
-- Escopo do MVP: superfície única = **app mobile do `Subscriber` + `api`**; `Redemption`
-  por **QR exibido pelo `Partner`** (Subscriber lê); **1 `Region`** piloto.
-- Administração de `Partner`/`PartnershipContract`/`Benefit` é **interna** (sem UI no MVP).
-- `Savings` **não** deriva da compra (não somos meio de pagamento) → ver RN-05.
-- North Star = MRR (assinantes ativos pagantes); `Savings` e `Redemption`s como input.
-- Foco inicial: equilíbrio dos dois lados, concentrado por `Region`.
-- `Subscription` mensal única, preço fixo. MVP sem cobrança ao `Partner`.
-- Mantido **`Subscriber`** (vs. `User`) para o ator consumidor.
-- Questões em aberto: **PDR** cálculo de `Savings` (RN-05), **PDR** antifraude de
-  `Redemption` (RN-04), **ADR** resolução do QR server-side.
+### Decisions (context; formal PDRs/ADRs to be created)
+- MVP scope: single surface = **`Subscriber` mobile app + `api`**; `Redemption` via **QR
+  displayed by the `Partner`** (Subscriber scans it); **1 `Region`** pilot.
+- Administration of `Partner`/`PartnershipContract`/`Benefit` is **internal** (no UI in the
+  MVP).
+- `Savings` does **not** derive from the purchase (we're not a payment intermediary) → see
+  RN-05.
+- North Star = MRR (active paying subscribers); `Savings` and `Redemption`s as input.
+- Initial focus: balance between both sides, concentrated per `Region`.
+- Single monthly `Subscription`, fixed price. MVP has no billing to the `Partner`.
+- Kept **`Subscriber`** (vs. `User`) for the consumer actor.
+- Open questions: **PDR** for `Savings` calculation (RN-05), **PDR** for `Redemption`
+  anti-fraud (RN-04), **ADR** for server-side QR resolution.
 
-### Propagação
-- REQ-001 em draft (refina PROD-001); AYDs a iniciar.
+### Propagation
+- REQ-001 in draft (refines PROD-001); AYDs to start.
 
-### Inicialização
-- Documentação inicializada a partir do scaffold.
+### Initialization
+- Documentation initialized from the scaffold.
