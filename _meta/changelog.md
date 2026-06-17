@@ -19,6 +19,17 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
 ## [Não lançado]
 
 ### Adicionado
+- **ADR-005** — Observabilidade (logs, métricas, traces e dashboards) com **stack gratuita**
+  consolidada no Google: api (Cloud Run) → Cloud Logging/Monitoring/Trace (RED nativo do Cloud
+  Run, logs JSON via `slog`, OpenTelemetry); mobile → Firebase Crashlytics/Performance/GA4;
+  dash técnico no Cloud Monitoring e dash de produto em Metabase sobre o Postgres. Fixa o
+  padrão de instrumentação cross-repo (schema de log, correlação por `traceparent`, vocabulário
+  de métricas, SLOs dos RNF-01/06/07) e a fronteira de portabilidade (OTel/stdout). Estende a
+  topologia C4 do ADR-001 com diagrama de containers de telemetria. Status: draft.
+- **AYD-002** — Baseline de observabilidade: materializa o ADR-005 numa fatia transversal que
+  instrumenta `api` e `mobile` antes das próximas features. Contrato novo cross-repo = header
+  de correlação `traceparent` (W3C) `mobile → api`; define schema de log, vocabulário inicial
+  de métricas/eventos e diagrama de sequência. Gera SPEC-002@api e SPEC-002@mobile.
 - **AYD-001** — Onboarding do `Subscriber` (identidade/conta), primeira fatia vertical do
   produto. Atende RF-01; escopo só identidade (sem billing/`Subscription`). Materializa o
   protocolo da ADR-002 em endpoints (`GET/PATCH /me`), com provisionamento implícito e
@@ -50,6 +61,9 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
   colisão de id com os docs reais (mesmo critério já aplicado ao `PDR-001-example.md`).
 
 ### Alterado
+- **manifest.md** — grafo passa a listar **ADR-005** e **AYD-002** (observabilidade); diagrama
+  de relações inclui o ramo de observabilidade; fase atual atualizada; **AYD-001** corrigido de
+  `draft` para `approved` (alinha o manifesto ao frontmatter do doc).
 - **manifest.md** — grafo de documentos passa a listar ADR-001/002/003/004 e PDR-002; fase
   atual ajustada para "Design (ADRs de fundação aceitos; AYDs a iniciar)"; diagrama de
   relações inclui a camada de fundação arquitetural.
@@ -64,6 +78,12 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
   PDR-002; "Questões em aberto" todas marcadas como decididas.
 
 ### Decisões
+- **Observabilidade no MVP (ADR-005):** stack **gratuita** consolidada no Google, decidida
+  cedo para que todas as features posteriores já nasçam instrumentadas no mesmo padrão.
+  Instrumentação **portável** (logs JSON no stdout + OpenTelemetry) mantém o backend
+  substituível. Dash de produto sai do **DB de domínio** (verdade financeira: MRR/`Savings`)
+  via Metabase; engajamento/funil via GA4. Pendência LGPD (telemetria a terceiro =
+  transferência internacional) registrada como candidata a PDR/nota de compliance.
 - **App do `Partner` no MVP:** haverá um **app mobile do `Partner`** (`PartnerOperator`) —
   motivado pelo **valor comercial das métricas** ao `Partner` e ao time de vendas. Correção de
   uma lacuna do desenho anterior (que o deixava fora). **Possivelmente o mesmo app do
@@ -84,6 +104,9 @@ Registro de mudanças nos docs compartilhados (PROD, REQ, AYD, ROAD, decisões).
   reavaliáveis via abstração `PaymentGateway`.
 
 ### Propagação
+- **ADR-005** (draft) → materializado por **AYD-002** (draft), que gera **SPEC-002@api** e
+  **SPEC-002@mobile**. SPEC-002@api criada no repo `api` (com PLAN-002 e
+  `conventions/observability.md`); **SPEC-002@mobile** a criar no repo `mobile`.
 - ADR-001/002/003/004 e PDR-002 em `accepted`; serão referenciados (`related`) pelos
   próximos AYDs a partir do AYD-001. Sem `children` ativos ainda (AYDs a iniciar).
 - Pendência de compliance LGPD (transferência internacional via Firebase; PII no Asaas)
