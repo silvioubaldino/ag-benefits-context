@@ -24,6 +24,8 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- Clarify changelog policy (§9): one line per PR, which may omit SPEC/PLAN additions
+
 ### Adicionado
 - **ADR-005 + AYD-002** — Baseline de observabilidade (stack gratuita no Google; contrato `traceparent` mobile→api e vocabulário de métricas). Gera SPEC-002@api/@mobile.
 - **AYD-001** — Onboarding do `Subscriber` (identidade): `GET/PATCH /me` com provisionamento idempotente por `firebase_uid`. Gera SPEC-001@api/@mobile.
