@@ -3,7 +3,7 @@ id: META-conventions
 type: meta
 title: Convenções da documentação
 status: approved
-updated: 2026-06-17
+updated: 2026-06-19
 ---
 
 # Convenções da documentação
@@ -116,9 +116,11 @@ Vale para o `changelog.md` de cada repo.
 - **No commit/PR**, o bloco `## Unreleased` é renomeado para
   `## [dd-MM-yyyy - vX.Y.Z]` (ex.: `## [04-06-2026 - v0.0.1]`), e um novo
   `## Unreleased` vazio é aberto acima dele para as próximas mudanças.
-- **Uma linha por PR:** cada entrada resume, em **uma única linha**, o que o PR entrega —
-  generalista e focada no que foi implementado, **sem detalhes de implementação nem do
-  framework de docs**; referencie o PR (ex.: `[PR#02](url)`). Sem subdivisão por categoria.
+- **Uma linha por PR:** cada PR gera **uma única linha** no changelog, que resume o que o PR
+  entrega — generalista e focada no que foi implementado, **sem detalhes de implementação nem
+  do framework de docs**; referencie o PR (ex.: `[PR#02](url)`). Sem subdivisão por categoria.
+  A linha **pode ignorar a adição de SPEC/PLAN** (são rastreados pelos próprios arquivos/git):
+  descreva o que foi entregue; se o PR só adiciona SPEC/PLAN, resuma a feature que eles abrem.
 
 ## 10. Convenções de diagramas
 
