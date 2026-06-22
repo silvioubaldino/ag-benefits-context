@@ -3,7 +3,7 @@ id: MANIFEST
 type: meta
 title: Manifesto / Índice do produto
 status: approved
-updated: 2026-06-14
+updated: 2026-06-22
 owner: silvioubaldino
 ---
 
@@ -15,7 +15,8 @@ owner: silvioubaldino
 - **Produto:** ag-benefits — clube de benefícios local por assinatura
 - **Repos:** context (este) · api · web · mobile
 - **Fase atual:** Design (PROD e REQ em draft; ADRs de fundação aceitos; AYD-001 aprovado;
-  observabilidade — ADR-005/AYD-002 — em draft)
+  observabilidade — ADR-005/AYD-002 — em draft; billing/conformidade com lojas — ADR-006 —
+  aceito: assinatura na **web**, que reentra no MVP; AYD-003 a iniciar)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
@@ -32,6 +33,7 @@ owner: silvioubaldino
 | Decisão arq  | ADR-003  | Pagamentos/Subscription (Asaas) | accepted | — | — |
 | Decisão arq  | ADR-004  | Resolução do Redemption (QR TOTP) | accepted | — | — |
 | Decisão arq  | ADR-005  | Observabilidade (logs/métricas/traces, stack gratuita) | draft | — | AYD-002 |
+| Decisão arq  | ADR-006  | Conformidade de billing com lojas (assinatura na web; fallback IAP) | accepted | — | AYD-003 |
 | Glossário    | GLO      | Linguagem ubíqua   | approved | —       | — |
 
 ## Ordem de leitura para a IA
@@ -47,11 +49,11 @@ PROD-001
    │           └─ AYD-002 (observabilidade baseline) ─┬─ SPEC-002@api ─ PLAN-002@api
    │                                                  └─ SPEC-002@mobile
    └─ ROAD-001
-   (web fora do MVP do Subscriber; AYDs futuros geram outras SPECs)
+   (web reentra no MVP só para assinatura — ADR-006; AYDs futuros geram outras SPECs)
 
 Fundação arquitetural (referenciada pelos AYDs):
    ADR-001 (topologia C4) ─┬─ ADR-002 (auth/Firebase)
-                           ├─ ADR-003 (pagamentos/Asaas)
+                           ├─ ADR-003 (pagamentos/Asaas) ─ ADR-006 (billing nas lojas) ─ AYD-003
                            ├─ ADR-004 (Redemption: QR TOTP) ─ PDR-002 (antifraude)
                            └─ ADR-005 (observabilidade) ─ AYD-002
 (PDR / ADR / GLO referenciados transversalmente por todos)

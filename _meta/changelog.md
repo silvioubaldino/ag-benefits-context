@@ -24,6 +24,7 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **ADR-006** — Store-billing compliance: `Subscription` is sold only on the web (Asaas); the mobile app stays free (account + `Catalog` browse) with `Redemption` gated and no in-app sale/steering; a minimal responsive `web` surface (landing → signup → subscription → store redirect) re-enters the MVP; IAP via RevenueCat kept as fallback if stores reject. Reframes AYD-003 (billing) across api + web.
 - **ROAD-001** — MVP roadmap planned: dependency-ordered Now/Next/Later, milestones M1–M5 with target dates, effort sizing (S/M/L + sprints), risks/costs, and initial pilot OKR targets.
 - Clarify changelog policy (§9): one line per PR, which may omit SPEC/PLAN additions
 

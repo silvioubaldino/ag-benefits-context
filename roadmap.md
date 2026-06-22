@@ -8,7 +8,7 @@ updated: 2026-06-22
 owner: silvioubaldino
 parents: [PROD-001]
 children: []
-related: [REQ-001, AYD-001, AYD-002, ADR-003, ADR-004, GLO]
+related: [REQ-001, AYD-001, AYD-002, ADR-003, ADR-004, ADR-006, GLO]
 tags: [mvp, planning, pilot]
 superseded_by: null
 ---
@@ -40,7 +40,7 @@ central (`Redemption`), **(3)** métricas e prontidão de piloto.
 
 | Horizonte | Tema | Entregáveis | Requisitos | Repos |
 |-----------|------|-------------|------------|-------|
-| **Now** | Conta e tubulação do `Subscriber` | **AYD-001** Onboarding (implementar — specs prontas) · **AYD-002** Baseline de observabilidade · **AYD-003** Billing/`Subscription` (criar AYD + impl.: Asaas atrás de `PaymentGateway`, webhooks, ciclo de `SubscriptionStatus`) | RF-01/02/03/04 · RNF-01/06/07 | api, mobile |
+| **Now** | Conta e tubulação do `Subscriber` | **AYD-001** Onboarding (implementar — specs prontas) · **AYD-002** Baseline de observabilidade · **AYD-003** Billing/`Subscription` (criar AYD + impl.: assinatura **na web** com Asaas atrás de `PaymentGateway`, webhooks, ciclo de `SubscriptionStatus`; mobile só lê status e faz gate do `Redemption` — ADR-006) | RF-01/02/03/04 · RNF-01/06/07 | api, web, mobile |
 | **Next** | Oferta + núcleo de valor (`Redemption`) | **AYD-004** Admin interno + modelo de domínio (`Partner`/`PartnershipContract`/`Benefit`/`Region` + provisionamento do segredo TOTP) · **AYD-005** `Catalog` por `Region` · **AYD-006** App do `Partner` (auth `PartnerOperator` + exibição do QR TOTP) · **AYD-007** `Redemption` + confirmação/`Savings` + histórico | RF-13 · RF-05/06 · RF-15/17 · RF-08/09/10/11/12 | api, mobile |
 | **Later** | Métricas, refinamento e prontidão de piloto | **AYD-008** Métricas (do próprio `Partner` no app + agregadas api-only) · Busca/filtro do `Catalog` · Endurecimento LGPD (consentimento — candidato a **PDR**), retenção/custo de telemetria (**TDR**) e calibração de SLO/alertas | RF-16/14 · RF-07 · RNF-04/05/06 | api, mobile |
 
@@ -53,7 +53,7 @@ central (`Redemption`), **(3)** métricas e prontidão de piloto.
 |---|-----------|:-------:|:-------:|-------------|----------------|
 | 1 | AYD-001 Onboarding (impl.) | M | 1 | 22/06 – 04/07 | specs/plans prontos |
 | 2 | AYD-002 Observabilidade baseline | M | 1 | 07/07 – 18/07 | #1 (instrumenta `/me`,`/healthz`) |
-| 3 | AYD-003 Billing/`Subscription` | L | 2 | 21/07 – 15/08 | #1; ADR-003 (Asaas/`PaymentGateway`) |
+| 3 | AYD-003 Billing/`Subscription` (api + **web** de assinatura) | L | 2 | 21/07 – 15/08 | #1; ADR-003 (Asaas/`PaymentGateway`); ADR-006 (assinatura na web) |
 | 4 | AYD-004 Admin + modelo de domínio | M–L | 1,5 | 18/08 – 05/09 | ADR-004 (segredo TOTP por `Partner`) |
 | 5 | AYD-005 `Catalog` por `Region` | M | 1 | 08/09 – 19/09 | #4 (dados de `Partner`/`Benefit`) |
 | 6 | AYD-006 App do `Partner` (auth + QR TOTP) | M | 1 | 22/09 – 03/10 | #4; ADR-002/004; **TDR app único×dois** |
@@ -71,7 +71,7 @@ completo no fim de outubro/2026; **piloto pronto ≈ início de dezembro/2026**.
 | Marco | Critério de "pronto" | Data alvo | Dependências |
 |-------|----------------------|-----------|--------------|
 | **M1 — Tubo validado** | `Subscriber` faz signup/login e existe registro de domínio (`GET/PATCH /me`); toda chamada `mobile→api` rastreável (`traceparent`), logs/métricas no Cloud Operations | **18/07/2026** | AYD-001, AYD-002, ADR-001/002 |
-| **M2 — Assinante paga** | Contratação aprovada → `SubscriptionStatus = active`; recibo visível; ciclo `active`/`past_due`/`canceled` dirigido por webhook; cancelamento | **15/08/2026** | M1, AYD-003, ADR-003 |
+| **M2 — Assinante paga** | Contratação **na web** aprovada → `SubscriptionStatus = active`; recibo visível; ciclo `active`/`past_due`/`canceled` dirigido por webhook; cancelamento; mobile lê o status e faz gate do `Redemption`; **modelo validado com as lojas** | **15/08/2026** | M1, AYD-003, ADR-003, ADR-006 |
 | **M3 — Oferta no ar** | Operação interna cadastra `Partner`/`PartnershipContract`/`Benefit`/`Region` e provisiona segredo TOTP; `Subscriber` enxerga o `Catalog` da sua `Region` | **19/09/2026** | M2, AYD-004, AYD-005 |
 | **M4 — Resgate funciona (keystone)** | App do `Partner` exibe QR rotativo; `Subscriber` escaneia, escolhe `Benefit` e confirma; `Savings` congelado (RN-03/05); histórico/"você economizou R$ X"; antifraude (RN-04) e idempotência (RNF-02) | **31/10/2026** | M3, AYD-006, AYD-007, ADR-004, PDR-001/002 |
 | **M5 — Piloto observável** | `PartnerOperator` vê métricas do próprio `Partner`; métricas agregadas api-only; dashboards técnico+produto; busca/filtro; LGPD/retenção endurecidos | **05/12/2026** | M4, AYD-008 |
@@ -96,6 +96,7 @@ completo no fim de outubro/2026; **piloto pronto ≈ início de dezembro/2026**.
 |------|------|------------------------|
 | **Cold-start two-sided** (densidade por `Region`) | Risco (negócio) | Maior risco do produto. Concentrar aquisição de `Partner` **antes/junto** do M3; meta de densidade mínima (OKR acima); custo zero ao `Partner` reduz fricção da oferta. |
 | **Asaas / Pix Automático** (maturidade da recorrência) | Risco | Abstração `PaymentGateway` (ADR-003) deixa o gateway substituível; validar **sandbox cedo** (no M2); cartão como caminho principal, Pix Automático em paralelo. |
+| **Conformidade de billing nas lojas** (App Store/Play classificarem a `Subscription` como digital → exigir IAP) | Risco | Assinatura **só na web** + app sem venda/steering desativa o gatilho (ADR-006); **validar com a Apple cedo** (pré-submissão no M2) com demo account/reviewer notes; fallback **IAP via RevenueCat** atrás da `PaymentGateway`, com preço maior no mobile para compensar a comissão. |
 | **Fraude por omissão pré-ação do `Partner`** | Risco (aceito) | Sem mitigação técnica no MVP (ADR-004): incentivo/UX (o `Subscriber` quer seu `Savings`) + monitoramento de anomalias (RNF-06). Revisitar via novo ADR se aparecer no piloto. |
 | **Segredo TOTP: distribuição e clock skew** | Risco | Entregue no 1º login do `PartnerOperator` (ADR-004); tolerância ±1 janela; plano de reemissão que invalida QRs antigos. |
 | **LGPD: transferência internacional** (Firebase/Asaas) + consentimento | Risco / compliance | Pendência aberta em ADR-001/002/003/005 → **PDR de consentimento** no onboarding (base legal/retenção). Tratar no item #10. |
