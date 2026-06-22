@@ -4,11 +4,11 @@ type: requirements
 title: Requisitos do produto
 status: draft
 created: 2026-06-04
-updated: 2026-06-14
+updated: 2026-06-22
 owner: silvioubaldino
 parents: [PROD-001]
-children: [AYD-001]
-related: [GLO, PDR-001, PDR-002, ADR-004]
+children: [AYD-001, AYD-002, AYD-003]
+related: [GLO, PDR-001, PDR-002, ADR-003, ADR-004, ADR-006]
 tags: [mvp]
 superseded_by: null
 ---
@@ -27,7 +27,7 @@ superseded_by: null
 | ID | Requisito | Prioridade (MoSCoW) | Critério de aceite |
 |----|-----------|---------------------|--------------------|
 | RF-01 | `Subscriber` cria conta e autentica | Must | Cadastro + login funcionam; sessão segura; recuperação de acesso |
-| RF-02 | `Subscriber` contrata `Subscription` mensal (preço fixo) via gateway de pagamento | Must | Pagamento aprovado → `Subscription` fica `active`; recibo visível |
+| RF-02 | `Subscriber` contrata `Subscription` mensal (preço fixo) via gateway de pagamento | Must | Pagamento aprovado → `Subscription` fica `active`; recibo visível. A contratação ocorre na **web** (Asaas), **não** no app mobile — conformidade com as lojas ([ADR-006](architecture_decisions/ADR-006-conformidade-billing-lojas.md)) |
 | RF-03 | Ciclo de `SubscriptionStatus` (`active`/`past_due`/`canceled`) conforme pagamento | Must | Falha de cobrança → `past_due`; regularização → `active`; só `active` habilita `Redemption` |
 | RF-04 | `Subscriber` cancela a `Subscription` | Must | Cancelamento efetivado; perde acesso ao fim do ciclo pago; estado `canceled` |
 | RF-05 | `Subscriber` visualiza o `Catalog` de `Benefit`s da sua `Region` | Must | Lista só `Benefit`s de `Partner`s com contrato vigente na `Region` do `Subscriber` |
@@ -88,9 +88,14 @@ superseded_by: null
 
 ## Escopo do MVP
 - **Dentro:**
-  - App **mobile** do `Subscriber`: conta/login, contratar/cancelar `Subscription`,
-    `Catalog` por `Region`, `Redemption` por leitura de QR, confirmação com `Savings`,
-    histórico + `Savings` acumulado.
+  - App **mobile** do `Subscriber`: conta/login **grátis**, `Catalog` por `Region`
+    (navegável **sem** `Subscription`), `Redemption` por leitura de QR **gated** por
+    `SubscriptionStatus = active` (botão oculto/desabilitado para não-assinante),
+    confirmação com `Savings`, histórico + `Savings` acumulado. **Não** vende nem direciona
+    a contratação da `Subscription` (conformidade com lojas — [ADR-006](architecture_decisions/ADR-006-conformidade-billing-lojas.md)).
+  - App **web** mínimo do `Subscriber` (responsivo): `landing → criação de conta →
+    contratação/cancelamento da Subscription (Asaas) → redirecionamento para as lojas`. É a
+    superfície de **contratação** e o funil de aquisição (ADR-006).
   - App **mobile** do `Partner` (`PartnerOperator`): login, visualização das **métricas do
     próprio `Partner`** (`Redemption`s/`Savings`) e exibição do **QR rotativo (TOTP)** que
     confirma o `Redemption` (RF-17, ADR-004). Possivelmente **o mesmo app** do `Subscriber`
@@ -102,7 +107,8 @@ superseded_by: null
 - **Fora (por enquanto):**
   - **Painel web** do `Partner` e **self-cadastro** do `Partner` (cadastro segue interno — RF-13).
   - Backoffice interno com UI dedicada (admin segue api-only).
-  - **Web** do `Subscriber`.
+  - **Web** do `Subscriber` **além** da contratação: a `web` no MVP é **mínima** (só assinatura/
+    funil — ADR-006); `Catalog`, `Redemption` e histórico seguem **só no mobile**.
   - Outros mecanismos de `Redemption` (ex.: código de cupom) — só QR no MVP.
   - Múltiplas `Region`s / expansão geográfica.
   - Pontos, cashback, pagamento da compra no app.
