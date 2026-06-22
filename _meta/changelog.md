@@ -24,6 +24,7 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **ROAD-001** — MVP roadmap planned: dependency-ordered Now/Next/Later, milestones M1–M5 with target dates, effort sizing (S/M/L + sprints), risks/costs, and initial pilot OKR targets.
 - Clarify changelog policy (§9): one line per PR, which may omit SPEC/PLAN additions
 
 ### Adicionado
