@@ -7,7 +7,7 @@ created: 2026-06-04
 updated: 2026-06-22
 owner: silvioubaldino
 parents: [PROD-001]
-children: [AYD-001]
+children: [AYD-001, AYD-002, AYD-003]
 related: [GLO, PDR-001, PDR-002, ADR-003, ADR-004, ADR-006]
 tags: [mvp]
 superseded_by: null

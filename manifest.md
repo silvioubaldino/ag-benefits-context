@@ -25,6 +25,7 @@ owner: silvioubaldino
 | Requisitos   | REQ-001  | Requisitos (MVP)   | draft   | PROD-001 | AYD-001 |
 | Design       | AYD-001  | Onboarding do Subscriber (identidade/conta) | approved | REQ-001 | SPEC-001@api, SPEC-001@mobile |
 | Design       | AYD-002  | Baseline de observabilidade | draft | REQ-001 | SPEC-002@api, SPEC-002@mobile |
+| Design       | AYD-003  | Billing — contratação e ciclo da Subscription (web + Asaas) | draft | REQ-001 | SPEC-003@api, SPEC-003@web, SPEC-003@mobile |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |
@@ -46,8 +47,11 @@ owner: silvioubaldino
 PROD-001
    ├─ REQ-001 ─┬─ AYD-001 (onboarding Subscriber) ─┬─ SPEC-001@api ─ PLAN-001@api
    │           │                                   └─ SPEC-001@mobile ─ PLAN-001@mobile
-   │           └─ AYD-002 (observabilidade baseline) ─┬─ SPEC-002@api ─ PLAN-002@api
-   │                                                  └─ SPEC-002@mobile
+   │           ├─ AYD-002 (observabilidade baseline) ─┬─ SPEC-002@api ─ PLAN-002@api
+   │           │                                      └─ SPEC-002@mobile
+   │           └─ AYD-003 (billing/Subscription) ─┬─ SPEC-003@api
+   │                                              ├─ SPEC-003@web
+   │                                              └─ SPEC-003@mobile
    └─ ROAD-001
    (web reentra no MVP só para assinatura — ADR-006; AYDs futuros geram outras SPECs)
 
