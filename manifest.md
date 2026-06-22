@@ -16,7 +16,7 @@ owner: silvioubaldino
 - **Repos:** context (este) · api · web · mobile
 - **Fase atual:** Design (PROD e REQ em draft; ADRs de fundação aceitos; AYD-001 aprovado;
   observabilidade — ADR-005/AYD-002 — em draft; billing/conformidade com lojas — ADR-006 —
-  aceito: assinatura na **web**, que reentra no MVP; AYD-003 a iniciar)
+  aceito: assinatura na **web**, que reentra no MVP; AYD-003 aprovado)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
@@ -25,7 +25,7 @@ owner: silvioubaldino
 | Requisitos   | REQ-001  | Requisitos (MVP)   | draft   | PROD-001 | AYD-001 |
 | Design       | AYD-001  | Onboarding do Subscriber (identidade/conta) | approved | REQ-001 | SPEC-001@api, SPEC-001@mobile |
 | Design       | AYD-002  | Baseline de observabilidade | draft | REQ-001 | SPEC-002@api, SPEC-002@mobile |
-| Design       | AYD-003  | Billing — contratação e ciclo da Subscription (web + Asaas) | draft | REQ-001 | SPEC-003@api, SPEC-003@web, SPEC-003@mobile |
+| Design       | AYD-003  | Billing — contratação e ciclo da Subscription (web + Asaas) | approved | REQ-001 | SPEC-003@api, SPEC-003@web, SPEC-003@mobile |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |

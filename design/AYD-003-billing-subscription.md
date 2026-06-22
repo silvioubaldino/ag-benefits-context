@@ -2,7 +2,7 @@
 id: AYD-003
 type: design
 title: Billing — contratação e ciclo da Subscription (web + Asaas)
-status: draft
+status: approved
 created: 2026-06-22
 updated: 2026-06-22
 owner: silvioubaldino
