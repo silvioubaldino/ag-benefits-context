@@ -4,7 +4,7 @@ type: design
 title: Billing — contratação e ciclo da Subscription (web + Asaas)
 status: approved
 created: 2026-06-22
-updated: 2026-06-22
+updated: 2026-06-26
 owner: silvioubaldino
 affects: [api, web, mobile]
 parents: [REQ-001]
@@ -124,7 +124,7 @@ Introduz a entidade **`Subscription`** (GLO) como registro próprio, **1:1** com
 |-------|------|--------|-------|
 | `id` | id | nosso DB | chave de domínio |
 | `subscriber_id` | id (FK) | `Subscriber` | dono da assinatura |
-| `status` | enum | webhook (ADR-003) | `SubscriptionStatus`: `active`/`past_due`/`canceled` |
+| `status` | enum | `POST /subscription` (criação) + webhook (ADR-003) | `SubscriptionStatus`: `pending` (criada, aguardando 1º pagamento) → `active`/`past_due`/`canceled` (via webhook) |
 | `billing_type` | enum | `POST /subscription` | `credit_card` (MVP); `pix` (fase 2) |
 | `gateway_customer_id` | string | Asaas | *customer* no gateway |
 | `gateway_subscription_id` | string | Asaas | assinatura recorrente no gateway |

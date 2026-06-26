@@ -24,6 +24,10 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **GLO + AYD-003** — Clarified `SubscriptionStatus` to include `pending` (created, awaiting
+  1st-payment confirmation): the `POST /subscription` response already returned it, but the
+  GLO/AYD-003 domain-model table only listed `active`/`past_due`/`canceled`, leaving it
+  undocumented. No contract change — docs now match the existing example payload.
 - **ADR-006 + AYD-003** — Store-billing compliance and the billing/`Subscription` design: the `Subscription` is sold only on the web (Asaas), with the api owning the webhook-driven `SubscriptionStatus` cycle (contract, cancel, status/receipt); the mobile app stays free (account + `Catalog` browse) reading status and gating `Redemption`, with no in-app sale/steering; a minimal responsive `web` surface (landing → signup → subscription → store redirect) re-enters the MVP; IAP via RevenueCat kept as fallback if stores reject. AYD-003 approved — generates SPEC-003@api/@web/@mobile.
 - **ROAD-001** — MVP roadmap planned: dependency-ordered Now/Next/Later, milestones M1–M5 with target dates, effort sizing (S/M/L + sprints), risks/costs, and initial pilot OKR targets.
 - Clarify changelog policy (§9): one line per PR, which may omit SPEC/PLAN additions
