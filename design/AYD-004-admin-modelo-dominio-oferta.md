@@ -228,7 +228,8 @@ sequenceDiagram
     A-->>Op: 201 { id, ... }
 
     Note over A,DB: oferta pronta → AYD-005 (Catalog) a expõe ao Subscriber
-    Note over A,DB: segredo entregue ao app do Partner no 1º login (AYD-006);<br/>recalculado no Redemption (AYD-007)
+    Note over A,DB: segredo entregue ao app do Partner no 1º login (AYD-006)
+    Note over A,DB: segredo recalculado no Redemption (AYD-007)
 
     opt comprometimento do segredo
         Op->>A: POST /admin/partners/:id/totp-secret:reissue
