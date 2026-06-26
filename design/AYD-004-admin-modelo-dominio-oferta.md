@@ -233,7 +233,7 @@ sequenceDiagram
 
     opt comprometimento do segredo
         Op->>A: POST /admin/partners/:id/totp-secret:reissue
-        A->>DB: novo segredo; invalida o anterior
+        A->>DB: gera novo segredo e invalida o anterior
         A-->>Op: 200 { reissued_at }   // QRs antigos param de valer
     end
 ```
