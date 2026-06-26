@@ -3,7 +3,7 @@ id: GLO
 type: glossary
 title: Linguagem ubíqua do domínio
 status: approved
-updated: 2026-06-04
+updated: 2026-06-26
 owner: silvioubaldino
 related: [PROD-001]
 ---
@@ -32,7 +32,7 @@ mobile "falarem a mesma língua": um termo, uma definição.
 | Termo (canônico) | Definição | Sinônimos a evitar |
 |------------------|-----------|--------------------|
 | **`Subscription`** | Vínculo de pagamento recorrente (mensal, preço fixo) que dá ao `Subscriber` o direito de uso do app e de realizar `Redemption`s. Tem um `SubscriptionStatus`. (PT: "assinatura") | "plan" (plano é a configuração; subscription é o vínculo), "mensalidade" |
-| **`SubscriptionStatus`** | Estado do vínculo: `active`, `past_due`, `canceled`. Só `active` habilita `Redemption`. (PT: "status da assinatura") | "situação", "state" genérico |
+| **`SubscriptionStatus`** | Estado do vínculo: `pending` (criada, aguardando confirmação do 1º pagamento), `active`, `past_due`, `canceled`. Só `active` habilita `Redemption`. (PT: "status da assinatura") | "situação", "state" genérico |
 | **`PartnershipContract`** | Acordo comercial com um `Partner`. Define quais `Benefit`s o `Partner` disponibiliza e a vigência. No MVP, sem cobrança financeira ao `Partner` (troca de engajamento). (PT: "contrato de parceria") | "partnership" (informal), "agreement", "convênio" |
 | **`Region`** | Recorte geográfico de operação (cidade/região piloto) onde `Subscriber`s e `Partner`s coexistem. Unidade de densidade do marketplace. (PT: "praça") | "area", "location", "local", "branch" |
 
