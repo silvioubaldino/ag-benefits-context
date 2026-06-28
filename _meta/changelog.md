@@ -24,6 +24,10 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **Tooling** — Added an agent-orchestration skill (`cascade`) plus two specialized subagents
+  (`doc-explorer`, `spec-author`) that drive the spec-driven doc cascade (PROD → REQ → AYD →
+  SPEC@repo), fanning out one author per affected repo and propagating `status: review` to
+  children, with model routing and single-writer reconciliation to keep token cost down.
 - **GLO + AYD-003** — Clarified `SubscriptionStatus` to include `pending` (created, awaiting
   1st-payment confirmation): the `POST /subscription` response already returned it, but the
   GLO/AYD-003 domain-model table only listed `active`/`past_due`/`canceled`, leaving it
