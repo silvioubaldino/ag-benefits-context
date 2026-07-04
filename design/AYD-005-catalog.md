@@ -4,12 +4,12 @@ type: design
 title: Catalog — navegação da oferta pelo Subscriber
 status: approved
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-05
 owner: silvioubaldino
 affects: [api, mobile]
 parents: [REQ-001]
 children: [SPEC-005@api, SPEC-005@mobile]
-related: [AYD-004, ADR-001, ADR-002, ADR-004, PDR-001, PDR-002, GLO]
+related: [AYD-001, AYD-004, ADR-001, ADR-002, ADR-004, PDR-001, PDR-002, GLO]
 tags: [mvp, catalog, partner, benefit, region]
 superseded_by: null
 ---
@@ -42,7 +42,7 @@ evento ficam no AYD-007. RF-07 (busca/filtro por categoria) é *Should* e fica f
 
 | Repo | Papel nesta feature | SPEC gerada |
 |------|---------------------|-------------|
-| api | Expõe `GET /catalog` (lista de `Partner`s com `Benefit`s, filtrada por `Region` e vigência do `PartnershipContract`) e `GET /partners/:id` (detalhe). Aplica RN-02 server-side. Leitura pura — não altera o modelo de AYD-004. | SPEC-005@api |
+| api | Expõe `GET /catalog` (lista de `Partner`s com `Benefit`s, filtrada por `Region` e vigência do `PartnershipContract`) e `GET /partners/:id` (detalhe). Aplica RN-02 server-side. Estende o `GET /me` (AYD-001) com o campo `region_id`. Leitura pura — não altera o modelo de AYD-004. | SPEC-005@api |
 | mobile | Exibe a tela de `Catalog` (lista de `Partner`s + `Benefit`s em destaque) e a tela de detalhe do `Partner`. Gatea o botão de resgate por `subscription_status` lido do `GET /me` (AYD-001). Não redireciona para a web de assinatura (ADR-006). | SPEC-005@mobile |
 
 > `web` **não** é afetado: o `Catalog` e o `Redemption` ficam exclusivamente no `mobile`
@@ -108,6 +108,16 @@ GET /partners/:id
   erros:
     401  token ausente/inválido/expirado
     404  Partner inexistente, inativo ou sem PartnershipContract vigente
+
+GET /me  (extensão adicionada por este AYD — campo novo na resposta existente de AYD-001)
+  auth: Bearer <Firebase ID token>   (role: subscriber)
+  campo adicionado à res 200:
+    region_id: string | null
+      — ID da Region ativa atribuída ao Subscriber.
+      — MVP (única Region): a api resolve automaticamente para o ID da Region ativa;
+        retorna null se nenhuma Region estiver ativa no sistema.
+      — Futuro: quando o Subscriber puder selecionar a Region, este campo refletirá
+        a escolha explícita (candidato a incremento de AYD-001).
 ```
 
 **Notas de contrato:**
@@ -148,6 +158,8 @@ sequenceDiagram
     participant DB as DB (domínio)
 
     S->>M: abre tela de Catalog
+    M->>A: GET /me (Bearer token)
+    A-->>M: 200 { ..., region_id: "<id>" | null }
     M->>A: GET /catalog?region_id=<id> (Bearer token)
     A->>DB: Partners ativos na Region com PartnershipContract vigente e Benefits ativos
     DB-->>A: lista filtrada
@@ -188,8 +200,11 @@ sequenceDiagram
   não exposto no `Catalog`.
 - Termos canônicos no [GLO](../_meta/glossary.md).
 
-> Nenhuma decisão **nova** de contrato é introduzida aqui — o AYD materializa, em endpoints de
-> leitura, o que AYD-004/ADR-002/ADR-006/PDR-001/002 já decidiram. Contrato novo → cria ADR.
+> Este AYD introduz uma **extensão ao contrato do `GET /me`** (AYD-001): adiciona o campo
+> `region_id` à resposta existente. A extensão é documentada aqui porque é necessária para o
+> fluxo do `Catalog` e não altera a decisão original de AYD-001. Novas decisões arquiteturais
+> (protocolo, segurança cross-repo) → criam ADR; mudanças de contrato em AYD existentes →
+> editam o AYD correspondente.
 
 ## Fora de escopo / questões em aberto
 
@@ -200,9 +215,11 @@ sequenceDiagram
   distância não está no contrato — candidato a incremento posterior (TDR@api + UX no mobile).
 - **Paginação do `Catalog`**: não incluída no MVP (piloto com volume pequeno de `Partner`s).
   Incluir se necessário (candidato a TDR@api).
-- **`Subscriber.region_id` no perfil**: o MVP passa `region_id` como query param explícito.
-  Num futuro próximo, a `Region` do `Subscriber` pode ser fixada no perfil (`PATCH /me`),
-  eliminando o param — revisitar após piloto (candidato a AYD ou incremento de AYD-001).
+- **`Subscriber.region_id` no perfil (seleção explícita)**: no MVP, a `Region` é resolvida
+  automaticamente pelo `GET /me` (primeira `Region` ativa do sistema). Num futuro próximo, o
+  `Subscriber` poderá selecionar explicitamente sua `Region` (via `PATCH /me` ou similar),
+  e o campo `region_id` do `GET /me` refletirá essa escolha — revisitar após piloto
+  (candidato a AYD ou incremento de AYD-001).
 - **Resgate (`Redemption`)**: o botão de resgate é exibido neste AYD, mas o fluxo completo
   (leitura do QR TOTP, validação, registro durável + `Savings`) é do **AYD-007**.
 - **`PartnerOperator` e QR rotativo**: exibição do QR no app do `Partner` é do **AYD-006**.
