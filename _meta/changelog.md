@@ -24,6 +24,7 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **AYD-005** — Catalog: `GET /catalog` (Partners + Benefits filtrados por Region e vigência do PartnershipContract) e `GET /partners/:id` (detalhe); mobile navega a oferta e gatea o botão de resgate por subscription_status. Gera SPEC-005@api e SPEC-005@mobile.
 - **AYD-004** — Internal admin + offer domain model: api-only (`role: admin`) CRUD for `Region`/`Partner`/`PartnershipContract`/`Benefit` plus per-`Partner` TOTP secret generation/reissue (ADR-004). Establishes the offer-side entities the `Catalog` (AYD-005) and `Redemption` (AYD-007) build on. Draft — generates SPEC-004@api.
 - **Tooling** — Added an agent-orchestration skill (`cascade`) plus two specialized subagents
   (`doc-explorer`, `spec-author`) that drive the spec-driven doc cascade (PROD → REQ → AYD →
