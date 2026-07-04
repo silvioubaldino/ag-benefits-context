@@ -2,7 +2,7 @@
 id: AYD-005
 type: design
 title: Catalog — navegação da oferta pelo Subscriber
-status: draft
+status: approved
 created: 2026-07-04
 updated: 2026-07-04
 owner: silvioubaldino
