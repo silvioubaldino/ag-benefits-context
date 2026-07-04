@@ -164,7 +164,7 @@ sequenceDiagram
     W-->>U: redireciona ao checkout hospedado (Asaas)
     U->>G: paga (cartão) na página do Asaas
     G->>A: webhook (pagamento confirmado)
-    A->>A: valida assinatura + idempotência; status → active
+    A->>A: valida assinatura e idempotência, status → active
     A-->>G: 200 ack
     W->>A: GET /subscription
     A-->>W: 200 { status: active, last_payment(receipt) }

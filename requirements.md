@@ -4,11 +4,11 @@ type: requirements
 title: Requisitos do produto
 status: draft
 created: 2026-06-04
-updated: 2026-06-22
+updated: 2026-06-26
 owner: silvioubaldino
 parents: [PROD-001]
-children: [AYD-001, AYD-002, AYD-003]
-related: [GLO, PDR-001, PDR-002, ADR-003, ADR-004, ADR-006]
+children: [AYD-001, AYD-002, AYD-003, AYD-004]
+related: [GLO, PDR-001, PDR-002, ADR-002, ADR-003, ADR-004, ADR-006]
 tags: [mvp]
 superseded_by: null
 ---
