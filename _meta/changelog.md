@@ -24,6 +24,7 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **Conventions** — added ERD as a recognized living doc type (§1 types table, §6 lifecycle); service repos with a database should maintain `docs/data-model.md` (ERD-NNN), updated in the same PR as each migration.
 - **AYD-005** — Catalog: `GET /catalog` (Partners + Benefits filtrados por Region e vigência do PartnershipContract) e `GET /partners/:id` (detalhe); extensão do `GET /me` com campo `region_id` (auto-resolvido para a Region ativa no MVP); mobile navega a oferta e gatea o botão de resgate por subscription_status. Gera SPEC-005@api e SPEC-005@mobile.
 - **AYD-004** — Internal admin + offer domain model: api-only (`role: admin`) CRUD for `Region`/`Partner`/`PartnershipContract`/`Benefit` plus per-`Partner` TOTP secret generation/reissue (ADR-004). Establishes the offer-side entities the `Catalog` (AYD-005) and `Redemption` (AYD-007) build on. Draft — generates SPEC-004@api.
 - **Tooling** — Added an agent-orchestration skill (`cascade`) plus two specialized subagents

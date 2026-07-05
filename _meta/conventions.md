@@ -27,6 +27,7 @@ ID = `PREFIXO-NNN`, estável (nunca muda, mesmo se o arquivo for renomeado/movid
 | SPEC | Especificação (parte de um repo) | serviço: `docs/specs/` | local |
 | PLAN | Plano de implementação | serviço: `docs/plans/` | local |
 | TDR  | Technical Decision Record | serviço: `docs/technical_decisions/` | local |
+| ERD  | Entity Relationship Diagram (schema do banco) | serviço com DB: `docs/data-model.md` | local |
 | GLO  | Glossário (linguagem ubíqua) | contexto: `_meta/glossary.md` | compartilhado |
 
 ## 2. Frontmatter padrão (obrigatório em todo doc)
@@ -75,6 +76,7 @@ IDs são **globais no produto**. Para apontar um doc de outro repo, use `ID@repo
 | PDR / ADR / TDR | **Append-only** | Nunca reescreve. Decisão nova substitui a antiga via `superseded_by`. |
 | SPEC | **Congela ao aprovar** | Mutável em draft/review; vira contrato quando `approved`. |
 | PLAN | **Efêmero** | Documento de trabalho; após executado, é histórico. |
+| ERD  | **Vivo** | Edita in-place na mesma PR da migration que altera o schema. Obrigatório antes do merge quando há mudança de tabela/coluna/índice (ver `docs/conventions/git.md` do serviço). |
 | GLO | Vivo | Edita in-place. |
 
 Auditoria dos docs vivos mora no **git + changelog**.
