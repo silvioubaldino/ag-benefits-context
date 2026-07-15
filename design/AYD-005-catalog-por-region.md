@@ -2,9 +2,9 @@
 id: AYD-005
 type: design
 title: Catalog por Region (exibição da oferta ao Subscriber)
-status: draft
+status: approved
 created: 2026-07-14
-updated: 2026-07-14
+updated: 2026-07-15
 owner: silvioubaldino
 affects: [api, mobile]
 parents: [REQ-001]
