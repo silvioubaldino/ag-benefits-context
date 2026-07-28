@@ -17,7 +17,8 @@ owner: silvioubaldino
 - **Fase atual:** Design (PROD e REQ em draft; ADRs de fundação aceitos; AYD-001 aprovado;
   observabilidade — ADR-005/AYD-002 — em draft; billing/conformidade com lojas — ADR-006 —
   aceito: assinatura na **web**, que reentra no MVP; AYD-003 aprovado; AYD-004 — admin +
-  modelo de domínio da oferta — em draft)
+  modelo de domínio da oferta — aprovado e implementado na api; AYD-005 — `Catalog` por
+  `Region` — aprovado e implementado na api + mobile)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
@@ -27,7 +28,8 @@ owner: silvioubaldino
 | Design       | AYD-001  | Onboarding do Subscriber (identidade/conta) | approved | REQ-001 | SPEC-001@api, SPEC-001@mobile |
 | Design       | AYD-002  | Baseline de observabilidade | draft | REQ-001 | SPEC-002@api, SPEC-002@mobile |
 | Design       | AYD-003  | Billing — contratação e ciclo da Subscription (web + Asaas) | approved | REQ-001 | SPEC-003@api, SPEC-003@web, SPEC-003@mobile |
-| Design       | AYD-004  | Admin interno + modelo de domínio da oferta (Region/Partner/Contract/Benefit + TOTP) | draft | REQ-001 | SPEC-004@api |
+| Design       | AYD-004  | Admin interno + modelo de domínio da oferta (Region/Partner/Contract/Benefit + TOTP) | approved | REQ-001 | SPEC-004@api |
+| Design       | AYD-005  | Catalog por Region (exibição da oferta ao Subscriber) | approved | REQ-001 | SPEC-005@api, SPEC-005@mobile |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |
@@ -54,8 +56,11 @@ PROD-001
    │           ├─ AYD-003 (billing/Subscription) ─┬─ SPEC-003@api
    │           │                                  ├─ SPEC-003@web
    │           │                                  └─ SPEC-003@mobile
-   │           └─ AYD-004 (admin + modelo da oferta) ─ SPEC-004@api
-   │                 (Region/Partner/PartnershipContract/Benefit + segredo TOTP)
+   │           ├─ AYD-004 (admin + modelo da oferta) ─ SPEC-004@api
+   │           │     (Region/Partner/PartnershipContract/Benefit + segredo TOTP)
+   │           └─ AYD-005 (Catalog por Region) ─┬─ SPEC-005@api
+   │                 (leitura da oferta:        └─ SPEC-005@mobile
+   │                  Region + vigência RN-02)
    └─ ROAD-001
    (web reentra no MVP só para assinatura — ADR-006; AYDs futuros geram outras SPECs)
 

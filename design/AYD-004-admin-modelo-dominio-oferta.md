@@ -2,9 +2,9 @@
 id: AYD-004
 type: design
 title: Administração interna + modelo de domínio da oferta (Region/Partner/PartnershipContract/Benefit + segredo TOTP)
-status: draft
+status: approved
 created: 2026-06-26
-updated: 2026-06-26
+updated: 2026-07-14
 owner: silvioubaldino
 affects: [api]
 parents: [REQ-001]
