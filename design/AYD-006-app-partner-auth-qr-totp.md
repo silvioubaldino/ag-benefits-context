@@ -2,9 +2,9 @@
 id: AYD-006
 type: design
 title: App do Partner — auth do PartnerOperator + exibição do QR rotativo (TOTP)
-status: draft
+status: approved
 created: 2026-07-28
-updated: 2026-07-28
+updated: 2026-07-30
 owner: silvioubaldino
 affects: [api, mobile]
 parents: [REQ-001]
