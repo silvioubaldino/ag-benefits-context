@@ -24,6 +24,7 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **AYD-006** — Partner app: `PartnerOperator` authentication and the rotating TOTP QR shown for `Redemption` (RF-15/RF-17). Approved — implemented in the api (SPEC-006@api) and mobile (SPEC-006@mobile).
 - **AYD-005** — `Catalog` by `Region`: subscriber-facing read design that exposes the AYD-004 offer model. Defines `GET /catalog` and `GET /catalog/partners/:id`, resolving the `Subscriber`'s `Region` (MVP: single active pilot), filtering to active `Partner`s with a currently-vigent `PartnershipContract` (RN-02) and their active `Benefit`s, and deriving a `redeemable` flag from `SubscriptionStatus` without hiding the catalog (free browse — ADR-006). Approved — implemented in the api (SPEC-005@api) and mobile (SPEC-005@mobile).
 - **AYD-004** — Internal admin + offer domain model: api-only (`role: admin`) CRUD for `Region`/`Partner`/`PartnershipContract`/`Benefit` plus per-`Partner` TOTP secret generation/reissue (ADR-004). Establishes the offer-side entities the `Catalog` (AYD-005) and `Redemption` (AYD-007) build on. Approved — implemented in the api (SPEC-004@api approved).
 - **Tooling** — Added an agent-orchestration skill (`cascade`) plus two specialized subagents
