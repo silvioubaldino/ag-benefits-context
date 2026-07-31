@@ -19,7 +19,9 @@ owner: silvioubaldino
   aceito: assinatura na **web**, que reentra no MVP; AYD-003 aprovado; AYD-004 — admin +
   modelo de domínio da oferta — aprovado e implementado na api; AYD-005 — `Catalog` por
   `Region` — aprovado e implementado na api + mobile; AYD-006 — app do `Partner`
-  (auth do `PartnerOperator` + QR rotativo TOTP) — aprovado e implementado na api + mobile)
+  (auth do `PartnerOperator` + QR rotativo TOTP) — aprovado e implementado na api + mobile;
+  AYD-008 — atribuição de role administrativa — aprovado e implementado na api, SPEC-008@api
+  pendente de registro local)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
@@ -32,6 +34,7 @@ owner: silvioubaldino
 | Design       | AYD-004  | Admin interno + modelo de domínio da oferta (Region/Partner/Contract/Benefit + TOTP) | approved | REQ-001 | SPEC-004@api |
 | Design       | AYD-005  | Catalog por Region (exibição da oferta ao Subscriber) | approved | REQ-001 | SPEC-005@api, SPEC-005@mobile |
 | Design       | AYD-006  | App do Partner — auth do PartnerOperator + QR rotativo (TOTP) | approved | REQ-001 | SPEC-006@api, SPEC-006@mobile |
+| Design       | AYD-008  | Atribuição de role administrativa (promoção/rebaixamento de usuário) | approved | REQ-001 | SPEC-008@api |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |
@@ -63,9 +66,11 @@ PROD-001
    │           ├─ AYD-005 (Catalog por Region) ─┬─ SPEC-005@api
    │           │     (leitura da oferta:        └─ SPEC-005@mobile
    │           │      Region + vigência RN-02)
-   │           └─ AYD-006 (app do Partner: auth + QR TOTP) ─┬─ SPEC-006@api
-   │                 (PartnerOperator ↔ Partner;            └─ SPEC-006@mobile
-   │                  entrega do segredo + exibição do QR)
+   │           ├─ AYD-006 (app do Partner: auth + QR TOTP) ─┬─ SPEC-006@api
+   │           │     (PartnerOperator ↔ Partner;            └─ SPEC-006@mobile
+   │           │      entrega do segredo + exibição do QR)
+   │           └─ AYD-008 (atribuição de role admin) ─ SPEC-008@api
+   │                 (fecha lacuna do ADR-002: quem grava a claim role)
    └─ ROAD-001
    (web reentra no MVP só para assinatura — ADR-006; AYDs futuros geram outras SPECs)
 
