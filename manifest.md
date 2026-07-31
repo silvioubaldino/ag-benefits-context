@@ -22,7 +22,7 @@ owner: silvioubaldino
   (auth do `PartnerOperator` + QR rotativo TOTP) — aprovado e implementado na api + mobile;
   AYD-008 — atribuição de role administrativa — aprovado e implementado na api, SPEC-008@api
   pendente de registro local; AYD-007 — `Redemption` + `Savings` + histórico, o **keystone**
-  do MVP — em draft, pendente de revisão)
+  do MVP — aprovado, em implementação na api + mobile)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
@@ -35,7 +35,7 @@ owner: silvioubaldino
 | Design       | AYD-004  | Admin interno + modelo de domínio da oferta (Region/Partner/Contract/Benefit + TOTP) | approved | REQ-001 | SPEC-004@api |
 | Design       | AYD-005  | Catalog por Region (exibição da oferta ao Subscriber) | approved | REQ-001 | SPEC-005@api, SPEC-005@mobile |
 | Design       | AYD-006  | App do Partner — auth do PartnerOperator + QR rotativo (TOTP) | approved | REQ-001 | SPEC-006@api, SPEC-006@mobile |
-| Design       | AYD-007  | Redemption — registro, confirmação com Savings e histórico | draft | REQ-001 | SPEC-007@api, SPEC-007@mobile |
+| Design       | AYD-007  | Redemption — registro, confirmação com Savings e histórico | approved | REQ-001 | SPEC-007@api, SPEC-007@mobile |
 | Design       | AYD-008  | Atribuição de role administrativa (promoção/rebaixamento de usuário) | approved | REQ-001 | SPEC-008@api |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |

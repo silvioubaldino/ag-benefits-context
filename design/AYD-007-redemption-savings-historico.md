@@ -2,9 +2,9 @@
 id: AYD-007
 type: design
 title: Redemption — registro, confirmação com Savings e histórico
-status: draft
+status: approved
 created: 2026-07-30
-updated: 2026-07-30
+updated: 2026-07-31
 owner: silvioubaldino
 affects: [api, mobile]
 parents: [REQ-001]
