@@ -45,7 +45,7 @@ QR pela câmera, escolha do `Benefit`, entrada do valor da compra, tela de confi
 tela de histórico.
 
 **Fora de escopo:** métricas do próprio `Partner` no app e as agregadas api-only (RF-16/RF-14)
-→ **AYD-008**; exibição do QR e auth do `PartnerOperator` (AYD-006); CRUD da oferta (AYD-004);
+→ **AYD de métricas** (ROAD "Later"); exibição do QR e auth do `PartnerOperator` (AYD-006); CRUD da oferta (AYD-004);
 busca/filtro do `Catalog` (RF-07); `web` (não afetado — ADR-006).
 
 ## Repos afetados e papéis
@@ -320,7 +320,8 @@ sequenceDiagram
 ## Fora de escopo / questões em aberto
 
 - **Métricas (RF-14/RF-16):** as métricas do próprio `Partner` no app e as agregadas api-only
-  são do **AYD-008** (ROAD "Later"). Este AYD só **gera o dado** — e o modelo do `Redemption`
+  são do **AYD-009** (ROAD "Later"; o número 008 foi ocupado pela atribuição de `role`
+  administrativa). Este AYD só **gera o dado** — e o modelo do `Redemption`
   (com `partner_id`/`region_id` denormalizados) já é desenhado para elas.
 - **Idempotência estrita por código (`(Subscriber, totp_code)`):** adotada a chave do ADR-004
   (com `Benefit`). A leitura estrita — um único `Redemption` por código escaneado, obrigando novo

@@ -4,7 +4,7 @@ type: roadmap
 title: Roadmap
 status: draft
 created: 2025-01-01
-updated: 2026-06-22
+updated: 2026-07-31
 owner: silvioubaldino
 parents: [PROD-001]
 children: []
@@ -42,10 +42,12 @@ central (`Redemption`), **(3)** métricas e prontidão de piloto.
 |-----------|------|-------------|------------|-------|
 | **Now** | Conta e tubulação do `Subscriber` | **AYD-001** Onboarding (implementar — specs prontas) · **AYD-002** Baseline de observabilidade · **AYD-003** Billing/`Subscription` (criar AYD + impl.: assinatura **na web** com Asaas atrás de `PaymentGateway`, webhooks, ciclo de `SubscriptionStatus`; mobile só lê status e faz gate do `Redemption` — ADR-006) | RF-01/02/03/04 · RNF-01/06/07 | api, web, mobile |
 | **Next** | Oferta + núcleo de valor (`Redemption`) | **AYD-004** Admin interno + modelo de domínio (`Partner`/`PartnershipContract`/`Benefit`/`Region` + provisionamento do segredo TOTP) · **AYD-005** `Catalog` por `Region` · **AYD-006** App do `Partner` (auth `PartnerOperator` + exibição do QR TOTP) · **AYD-007** `Redemption` + confirmação/`Savings` + histórico | RF-13 · RF-05/06 · RF-15/17 · RF-08/09/10/11/12 | api, mobile |
-| **Later** | Métricas, refinamento e prontidão de piloto | **AYD-008** Métricas (do próprio `Partner` no app + agregadas api-only) · Busca/filtro do `Catalog` · Endurecimento LGPD (consentimento — candidato a **PDR**), retenção/custo de telemetria (**TDR**) e calibração de SLO/alertas | RF-16/14 · RF-07 · RNF-04/05/06 | api, mobile |
+| **Later** | Métricas, refinamento e prontidão de piloto | **AYD-009** Métricas (do próprio `Partner` no app + agregadas api-only) · Busca/filtro do `Catalog` · Endurecimento LGPD (consentimento — candidato a **PDR**), retenção/custo de telemetria (**TDR**) e calibração de SLO/alertas | RF-16/14 · RF-07 · RNF-04/05/06 | api, mobile |
 
-> `web` fica **fora** do MVP (REQ-001). AYD-003..008 **ainda não existem** — criá-los faz parte
-> do entregável. Contrato muda só aqui (AYD/ADR); serviços implementam (regra cross-repo).
+> `web` reentra no MVP só para a assinatura (ADR-006). AYD-003..007 já existem; o AYD de métricas
+> (item #8) ainda não — criá-lo faz parte do entregável, e ele leva o número **AYD-009**, já que o
+> 008 foi ocupado pela atribuição de `role` administrativa. Contrato muda só aqui (AYD/ADR);
+> serviços implementam (regra cross-repo).
 
 ## Estimativas por entregável
 
@@ -58,7 +60,7 @@ central (`Redemption`), **(3)** métricas e prontidão de piloto.
 | 5 | AYD-005 `Catalog` por `Region` | M | 1 | 08/09 – 19/09 | #4 (dados de `Partner`/`Benefit`) |
 | 6 | AYD-006 App do `Partner` (auth + QR TOTP) | M | 1 | 22/09 – 03/10 | #4; ADR-002/004; **TDR app único×dois** |
 | 7 | AYD-007 `Redemption` + `Savings` + histórico | L | 2 | 06/10 – 31/10 | #3,#5,#6; ADR-004; PDR-001/002 |
-| 8 | AYD-008 Métricas (`Partner` + agregadas) | M | 1 | 03/11 – 14/11 | #7 (dados de `Redemption`) |
+| 8 | AYD-009 Métricas (`Partner` + agregadas) | M | 1 | 03/11 – 14/11 | #7 (dados de `Redemption`) |
 | 9 | Busca/filtro `Catalog` (RF-07, *Should*) | S | 0,5 | 17/11 – 21/11 | #5 |
 | 10 | LGPD/retenção/SLO (endurecimento) | S | 0,5–1 | 24/11 – 05/12 | #2,#3 (transversal) |
 
@@ -74,7 +76,7 @@ completo no fim de outubro/2026; **piloto pronto ≈ início de dezembro/2026**.
 | **M2 — Assinante paga** | Contratação **na web** aprovada → `SubscriptionStatus = active`; recibo visível; ciclo `active`/`past_due`/`canceled` dirigido por webhook; cancelamento; mobile lê o status e faz gate do `Redemption`; **modelo validado com as lojas** | **15/08/2026** | M1, AYD-003, ADR-003, ADR-006 |
 | **M3 — Oferta no ar** | Operação interna cadastra `Partner`/`PartnershipContract`/`Benefit`/`Region` e provisiona segredo TOTP; `Subscriber` enxerga o `Catalog` da sua `Region` | **19/09/2026** | M2, AYD-004, AYD-005 |
 | **M4 — Resgate funciona (keystone)** | App do `Partner` exibe QR rotativo; `Subscriber` escaneia, escolhe `Benefit` e confirma; `Savings` congelado (RN-03/05); histórico/"você economizou R$ X"; antifraude (RN-04) e idempotência (RNF-02) | **31/10/2026** | M3, AYD-006, AYD-007, ADR-004, PDR-001/002 |
-| **M5 — Piloto observável** | `PartnerOperator` vê métricas do próprio `Partner`; métricas agregadas api-only; dashboards técnico+produto; busca/filtro; LGPD/retenção endurecidos | **05/12/2026** | M4, AYD-008 |
+| **M5 — Piloto observável** | `PartnerOperator` vê métricas do próprio `Partner`; métricas agregadas api-only; dashboards técnico+produto; busca/filtro; LGPD/retenção endurecidos | **05/12/2026** | M4, AYD-009 |
 
 ## Metas iniciais do piloto (OKR — a confirmar)
 
