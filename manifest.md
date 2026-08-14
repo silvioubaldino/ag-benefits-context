@@ -16,7 +16,9 @@ owner: silvioubaldino
 - **Repos:** context (este) · api · web · mobile
 - **Fase atual:** Design (PROD e REQ em draft; ADRs de fundação aceitos; AYD-001 aprovado;
   observabilidade — ADR-005/AYD-002 — em draft; billing/conformidade com lojas — ADR-006 —
-  aceito: assinatura na **web**, que reentra no MVP; AYD-003 aprovado; AYD-004 — admin +
+  aceito: assinatura na **web**, que reentra no MVP; AYD-003 aprovado e implementado na api +
+  web + mobile — o funil de venda passou a rodar contra a api de verdade, com `GET /plan`
+  servindo o preço anunciado e o cancelamento (RF-04) na web; AYD-004 — admin +
   modelo de domínio da oferta — aprovado e implementado na api; AYD-005 — `Catalog` por
   `Region` — aprovado e implementado na api + mobile; AYD-006 — app do `Partner`
   (auth do `PartnerOperator` + QR rotativo TOTP) — aprovado e implementado na api + mobile;
