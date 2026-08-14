@@ -24,7 +24,9 @@ owner: silvioubaldino
   (auth do `PartnerOperator` + QR rotativo TOTP) — aprovado e implementado na api + mobile;
   AYD-008 — atribuição de role administrativa — aprovado e implementado na api, SPEC-008@api
   pendente de registro local; AYD-007 — `Redemption` + `Savings` + histórico, o **keystone**
-  do MVP — aprovado, em implementação na api + mobile)
+  do MVP — aprovado, em implementação na api + mobile; AYD-009 — métricas de negócio
+  (RF-16/RF-14) — **em draft**, aguardando revisão, com SPEC-009@api e SPEC-009@mobile
+  rascunhadas)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
@@ -39,6 +41,7 @@ owner: silvioubaldino
 | Design       | AYD-006  | App do Partner — auth do PartnerOperator + QR rotativo (TOTP) | approved | REQ-001 | SPEC-006@api, SPEC-006@mobile |
 | Design       | AYD-007  | Redemption — registro, confirmação com Savings e histórico | approved | REQ-001 | SPEC-007@api, SPEC-007@mobile |
 | Design       | AYD-008  | Atribuição de role administrativa (promoção/rebaixamento de usuário) | approved | REQ-001 | SPEC-008@api |
+| Design       | AYD-009  | Métricas de negócio — do próprio Partner no app + agregadas internas | draft | REQ-001 | SPEC-009@api, SPEC-009@mobile |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |
@@ -76,8 +79,11 @@ PROD-001
    │           ├─ AYD-007 (Redemption + Savings + histórico) ─┬─ SPEC-007@api
    │           │     (keystone: consome o QR, valida          └─ SPEC-007@mobile
    │           │      elegibilidade/limites, congela o Savings)
-   │           └─ AYD-008 (atribuição de role admin) ─ SPEC-008@api
-   │                 (fecha lacuna do ADR-002: quem grava a claim role)
+   │           ├─ AYD-008 (atribuição de role admin) ─ SPEC-008@api
+   │           │     (fecha lacuna do ADR-002: quem grava a claim role)
+   │           └─ AYD-009 (métricas de negócio) ─┬─ SPEC-009@api
+   │                 (read-only sobre o          └─ SPEC-009@mobile
+   │                  Redemption: RF-16 no app do Partner + RF-14 agregadas api-only)
    └─ ROAD-001
    (web reentra no MVP só para assinatura — ADR-006; AYDs futuros geram outras SPECs)
 

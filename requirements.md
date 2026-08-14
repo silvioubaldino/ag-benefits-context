@@ -4,10 +4,10 @@ type: requirements
 title: Requisitos do produto
 status: draft
 created: 2026-06-04
-updated: 2026-07-30
+updated: 2026-08-14
 owner: silvioubaldino
 parents: [PROD-001]
-children: [AYD-001, AYD-002, AYD-003, AYD-004, AYD-005, AYD-006, AYD-007, AYD-008]
+children: [AYD-001, AYD-002, AYD-003, AYD-004, AYD-005, AYD-006, AYD-007, AYD-008, AYD-009]
 related: [GLO, PDR-001, PDR-002, ADR-002, ADR-003, ADR-004, ADR-006]
 tags: [mvp]
 superseded_by: null
@@ -39,7 +39,7 @@ superseded_by: null
 | RF-11 | `Subscriber` vê confirmação do `Redemption` com o `Savings` do uso | Must | Tela de sucesso exibe o valor economizado naquele `Redemption` |
 | RF-12 | `Subscriber` vê histórico de `Redemption`s e `Savings` acumulado | Must | "Você já economizou R$ X" = soma dos `Savings`; lista de usos com data/`Partner` |
 | RF-13 | Administração interna de `Partner`/`PartnershipContract`/`Benefit` e provisionamento do segredo TOTP do `Partner` | Must | Equipe cadastra/edita via processo interno (sem UI dedicada); cada `Partner` recebe um segredo TOTP (não por `Benefit` — ADR-004), reemissível |
-| RF-14 | Consulta/exportação interna de métricas agregadas | Should | Negócio obtém `Redemption`s e `Savings` por `Partner`/`Region`/período (consulta/export interna, sem UI) |
+| RF-14 | Consulta/exportação interna de métricas agregadas | Should | Negócio obtém `Redemption`s e `Savings` por `Partner`/`Region`/`Benefit`/período (consulta/export interna em JSON ou CSV, sem UI), mais os indicadores de engajamento do piloto (`Subscriber`s ativos, % com ≥ 1 `Redemption`, `Savings` médio) — ver [AYD-009](design/AYD-009-metricas-partner-e-agregadas.md). Export é **agregado**, não linha a linha |
 | RF-15 | `PartnerOperator` autentica e acessa o app mobile do `Partner` | Must | Login do `PartnerOperator`; acesso restrito ao seu `Partner` (`role` `partner_operator`) |
 | RF-16 | `PartnerOperator` vê as métricas do próprio `Partner` no app | Must | App mostra `Redemption`s e `Savings` do próprio `Partner` por período; base do valor comercial da parceria |
 | RF-17 | App do `Partner` exibe o QR rotativo (TOTP) para leitura pelo `Subscriber` | Must | QR muda a cada ~30s (ADR-004); funciona sem rede do `Partner` (cálculo local a partir do segredo provisionado) |
@@ -120,3 +120,10 @@ superseded_by: null
 - ✅ **ADR-004 — Resolução do `Redemption`**: decidido (QR rotativo TOTP por `Partner`, sem
   etapa de "pedir cupom"; revisitar se omissão pré-ação do `Partner` se mostrar relevante no
   piloto).
+- ⏳ **PDR — definição de `MRR` e de churn** (métricas de receita/retenção do PROD-001/ROAD-001):
+  o [AYD-009](design/AYD-009-metricas-partner-e-agregadas.md) entregou só os indicadores de
+  definição inequívoca e deixou estes de fora por dependerem de **decisão de produto** — churn
+  é taxa simples ou por coorte? conta no pedido de cancelamento ou no fim do ciclo pago?
+  `past_due` já é churn? o `MRR` reconhece `Subscription` `pending`? Decidir antes de virar
+  contrato. Depende também de **histórico de `SubscriptionStatus`**, que o modelo atual não
+  guarda (AYD-003).
