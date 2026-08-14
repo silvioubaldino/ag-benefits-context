@@ -4,7 +4,7 @@ type: design
 title: Billing — contratação e ciclo da Subscription (web + Asaas)
 status: approved
 created: 2026-06-22
-updated: 2026-06-26
+updated: 2026-08-14
 owner: silvioubaldino
 affects: [api, web, mobile]
 parents: [REQ-001]
@@ -43,8 +43,8 @@ em aberto".
 
 | Repo | Papel nesta feature | SPEC gerada |
 |------|---------------------|-------------|
-| web | **Superfície de venda** (ADR-006): `landing → criação de conta (Firebase) → contratação (inicia `POST /subscription`) → checkout Asaas → recibo/status → redireciona para as lojas`. Também o **cancelamento** (RF-04). Responsivo (mobile-first). | SPEC-003@web |
-| api | **Dona do ciclo de `Subscription`.** Garante o *customer* e cria a assinatura recorrente no Asaas atrás da porta `PaymentGateway`; recebe e valida o **webhook**, processa **idempotente** e **transiciona** o `SubscriptionStatus` (mapa do ADR-003); expõe status/recibo e cancelamento; `GET /me` passa a carregar o `subscription_status` real. | SPEC-003@api |
+| web | **Superfície de venda** (ADR-006): `landing → criação de conta (Firebase) → contratação (inicia `POST /subscription`) → checkout Asaas → recibo/status → redireciona para as lojas`. Também o **cancelamento** (RF-04). Exibe o preço vindo de `GET /plan` — **nunca** um valor fixo no código. Dona da copy do plano (nome, descrição, vantagens). Responsivo (mobile-first). | SPEC-003@web |
+| api | **Dona do ciclo de `Subscription`.** Garante o *customer* e cria a assinatura recorrente no Asaas atrás da porta `PaymentGateway`; recebe e valida o **webhook**, processa **idempotente** e **transiciona** o `SubscriptionStatus` (mapa do ADR-003); expõe status/recibo e cancelamento; **expõe o preço vigente do plano** (`GET /plan`, público) para a vitrine da web; `GET /me` passa a carregar o `subscription_status` real. | SPEC-003@api |
 | mobile | **Não vende, não linka** (ADR-006). **Lê** o `subscription_status` (via `GET /me`, contrato do AYD-001) e faz o **gate do `Redemption`** (oculta/desabilita para `status != active`), com mensagem neutra. | SPEC-003@mobile |
 
 > A coleta de cartão **não** trafega pela nossa web nem pela api: usamos **checkout hospedado
@@ -55,9 +55,23 @@ em aberto".
 
 Chamadas autenticadas levam `Authorization: Bearer <Firebase ID token>` (ADR-002, `role:
 subscriber`) — a **web** autentica no Firebase igual ao mobile. Preço/plano é **fixo e único**
-no MVP (configuração da api), por isso não trafega no payload.
+no MVP (configuração da api), por isso não trafega no payload da contratação — mas a web
+precisa **exibi-lo** antes da venda, e quem o expõe é a api (`GET /plan`, abaixo).
+
+Valores monetários trafegam em **reais** (`number`), como no resto do produto
+(`savings`, `discount_value`, `last_payment.amount`).
 
 ```
+GET /plan                                  (web, PÚBLICO — sem auth)
+  efeito: expõe o preço vigente da Subscription, para a landing e o resumo do plano.
+          Leitura de configuração da api (a mesma usada ao criar a assinatura no
+          gateway), sem entidade de plano no domínio.
+  res 200: {
+    price: number,                         // reais; ex.: 49.90
+    currency: "BRL",
+    billing_period: "monthly"              // plano único mensal no MVP
+  }
+
 POST /subscription                         (web, autenticado)
   efeito: garante o customer no Asaas (idempotente) e cria a Subscription
           recorrente; retorna a URL de checkout hospedado p/ o 1º pagamento.
@@ -97,6 +111,16 @@ POST /webhooks/asaas                       (Asaas → api; SEM Firebase)
   erros:
     401  assinatura inválida
 ```
+
+**Por que `GET /plan` é público e mínimo:**
+- **Público** porque a landing exibe o preço a quem ainda não tem conta — exigir token
+  inverteria o funil (ADR-006: a landing é a porta de entrada).
+- **Mínimo** porque só o **fato de cobrança** (preço, moeda, periodicidade) é contrato: é o
+  valor que a api usa ao criar a assinatura no gateway, e divergir dele na vitrine é
+  cobrar diferente do anunciado. **Nome do plano, descrição e lista de vantagens são
+  conteúdo de marketing e ficam na web** — a api não é dona de copy.
+- **Sem entidade de plano** no domínio: é leitura de configuração (ver "questões em
+  aberto" — multi-plano/trials/cupons ficam para depois).
 
 **`GET /me` (AYD-001) — campo agora preenchido:**
 ```
@@ -154,7 +178,11 @@ sequenceDiagram
     participant G as Asaas (PaymentGateway)
     participant M as mobile (app)
 
-    U->>W: acessa landing / cria conta
+    U->>W: acessa landing
+    W->>A: GET /plan (público)
+    A-->>W: 200 { price, currency, billing_period }
+    W-->>U: preço anunciado (landing / resumo do plano)
+    U->>W: cria conta
     W->>F: signup/login (SDK)
     F-->>W: ID token
     W->>A: POST /subscription { billing_type } (Bearer)
