@@ -26,7 +26,8 @@ owner: silvioubaldino
   pendente de registro local; AYD-007 — `Redemption` + `Savings` + histórico, o **keystone**
   do MVP — aprovado, em implementação na api + mobile; AYD-009 — métricas de negócio
   (RF-16/RF-14) — **em draft**, aguardando revisão, com SPEC-009@api e SPEC-009@mobile
-  rascunhadas)
+  já implementadas: `GET /partner/me/metrics` + `/admin/metrics/{redemptions,overview}`
+  na api e a tela de métricas do próprio `Partner` no mobile)
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
