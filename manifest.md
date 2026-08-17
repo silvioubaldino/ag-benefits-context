@@ -25,7 +25,7 @@ owner: silvioubaldino
   AYD-008 — atribuição de role administrativa — aprovado e implementado na api, SPEC-008@api
   pendente de registro local; AYD-007 — `Redemption` + `Savings` + histórico, o **keystone**
   do MVP — aprovado, em implementação na api + mobile;
-  **AYD-009 — simplificação do modelo — aprovado, a implementar na api + mobile:** remove
+  **AYD-009 — simplificação do modelo — aprovado e implementado na api + mobile:** remove
   `PartnershipContract` como entidade (vigência vira campo do `Partner`), remove a tabela
   `partner_operators` (identidade vira claim `partner_id`) e remove o CRUD de `Region`
   (a dimensão e as FKs ficam). Revisa AYD-004/006/008. **QR rotativo TOTP e app do `Partner`
