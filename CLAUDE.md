@@ -18,7 +18,8 @@ que o espelham em `docs/shared/`.
 - **ADR** (`architecture_decisions/`) — decisões de arquitetura cross-repo (contratos, protocolos)
 
 ## O que NÃO mora aqui
-Specs, plans, decisões técnicas locais (TDR), convenções de código e changelog de cada serviço.
+Specs (que já carregam o plano de implementação dentro), decisões técnicas locais (TDR),
+convenções de código e changelog de cada serviço.
 
 ## Regra central (cross-repo)
 - **1 AYD → N SPECs**, uma por repo afetado. O AYD é a fonte dos contratos.

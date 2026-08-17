@@ -24,7 +24,15 @@ owner: silvioubaldino
   (auth do `PartnerOperator` + QR rotativo TOTP) — aprovado e implementado na api + mobile;
   AYD-008 — atribuição de role administrativa — aprovado e implementado na api, SPEC-008@api
   pendente de registro local; AYD-007 — `Redemption` + `Savings` + histórico, o **keystone**
-  do MVP — aprovado, em implementação na api + mobile)
+  do MVP — aprovado, em implementação na api + mobile;
+  **AYD-009 — simplificação do modelo — aprovado, a implementar na api + mobile:** remove
+  `PartnershipContract` como entidade (vigência vira campo do `Partner`), remove a tabela
+  `partner_operators` (identidade vira claim `partner_id`) e remove o CRUD de `Region`
+  (a dimensão e as FKs ficam). Revisa AYD-004/006/008. **QR rotativo TOTP e app do `Partner`
+  seguem inalterados.**)
+
+- **Framework de docs:** desde ago/2026 o **PLAN foi absorvido pela SPEC** (conventions §1) —
+  o plano de implementação é seção da própria SPEC; os `PLAN-NNN` em `docs/plans/` são histórico.
 
 ## Grafo de documentos
 | Camada | ID | Documento | Status | Refina | Detalhado por |
@@ -34,11 +42,12 @@ owner: silvioubaldino
 | Design       | AYD-001  | Onboarding do Subscriber (identidade/conta) | approved | REQ-001 | SPEC-001@api, SPEC-001@mobile |
 | Design       | AYD-002  | Baseline de observabilidade | draft | REQ-001 | SPEC-002@api, SPEC-002@mobile |
 | Design       | AYD-003  | Billing — contratação e ciclo da Subscription (web + Asaas) | approved | REQ-001 | SPEC-003@api, SPEC-003@web, SPEC-003@mobile |
-| Design       | AYD-004  | Admin interno + modelo de domínio da oferta (Region/Partner/Contract/Benefit + TOTP) | approved | REQ-001 | SPEC-004@api |
+| Design       | AYD-004  | Admin interno + modelo de domínio da oferta (Region/Partner/Contract/Benefit + TOTP) | approved ⚠️ revisado por AYD-009 | REQ-001 | SPEC-004@api |
 | Design       | AYD-005  | Catalog por Region (exibição da oferta ao Subscriber) | approved | REQ-001 | SPEC-005@api, SPEC-005@mobile |
-| Design       | AYD-006  | App do Partner — auth do PartnerOperator + QR rotativo (TOTP) | approved | REQ-001 | SPEC-006@api, SPEC-006@mobile |
+| Design       | AYD-006  | App do Partner — auth do PartnerOperator + QR rotativo (TOTP) | approved ⚠️ auth revisada por AYD-009 (QR/TOTP intactos) | REQ-001 | SPEC-006@api, SPEC-006@mobile |
 | Design       | AYD-007  | Redemption — registro, confirmação com Savings e histórico | approved | REQ-001 | SPEC-007@api, SPEC-007@mobile |
 | Design       | AYD-008  | Atribuição de role administrativa (promoção/rebaixamento de usuário) | approved | REQ-001 | SPEC-008@api |
+| Design       | AYD-009  | Simplificação do modelo da oferta e da identidade do PartnerOperator | approved | REQ-001 | SPEC-009@api, SPEC-009@mobile |
 | Roadmap      | ROAD-001 | Roadmap            | draft   | PROD-001 | — |
 | Decisão prod | PDR-001  | Cálculo do Savings | accepted | —       | — |
 | Decisão prod | PDR-002  | Antifraude/repetição do Redemption | accepted | — | — |
@@ -58,28 +67,33 @@ owner: silvioubaldino
 ## Diagrama de relações
 ```
 PROD-001
-   ├─ REQ-001 ─┬─ AYD-001 (onboarding Subscriber) ─┬─ SPEC-001@api ─ PLAN-001@api
-   │           │                                   └─ SPEC-001@mobile ─ PLAN-001@mobile
-   │           ├─ AYD-002 (observabilidade baseline) ─┬─ SPEC-002@api ─ PLAN-002@api
+   ├─ REQ-001 ─┬─ AYD-001 (onboarding Subscriber) ─┬─ SPEC-001@api
+   │           │                                   └─ SPEC-001@mobile
+   │           ├─ AYD-002 (observabilidade baseline) ─┬─ SPEC-002@api
    │           │                                      └─ SPEC-002@mobile
    │           ├─ AYD-003 (billing/Subscription) ─┬─ SPEC-003@api
    │           │                                  ├─ SPEC-003@web
    │           │                                  └─ SPEC-003@mobile
-   │           ├─ AYD-004 (admin + modelo da oferta) ─ SPEC-004@api
+   │           ├─ AYD-004 (admin + modelo da oferta) ─ SPEC-004@api      ⚠️ revisado por AYD-009
    │           │     (Region/Partner/PartnershipContract/Benefit + segredo TOTP)
    │           ├─ AYD-005 (Catalog por Region) ─┬─ SPEC-005@api
    │           │     (leitura da oferta:        └─ SPEC-005@mobile
    │           │      Region + vigência RN-02)
-   │           ├─ AYD-006 (app do Partner: auth + QR TOTP) ─┬─ SPEC-006@api
-   │           │     (PartnerOperator ↔ Partner;            └─ SPEC-006@mobile
+   │           ├─ AYD-006 (app do Partner: auth + QR TOTP) ─┬─ SPEC-006@api    ⚠️ auth revisada
+   │           │     (PartnerOperator ↔ Partner;            └─ SPEC-006@mobile     por AYD-009
    │           │      entrega do segredo + exibição do QR)
    │           ├─ AYD-007 (Redemption + Savings + histórico) ─┬─ SPEC-007@api
    │           │     (keystone: consome o QR, valida          └─ SPEC-007@mobile
    │           │      elegibilidade/limites, congela o Savings)
-   │           └─ AYD-008 (atribuição de role admin) ─ SPEC-008@api
-   │                 (fecha lacuna do ADR-002: quem grava a claim role)
+   │           ├─ AYD-008 (atribuição de role admin) ─ SPEC-008@api
+   │           │     (fecha lacuna do ADR-002: quem grava a claim role)
+   │           └─ AYD-009 (simplificação do modelo) ─┬─ SPEC-009@api
+   │                 (revisa 004/006/008:            └─ SPEC-009@mobile
+   │                  −PartnershipContract, −tabela partner_operators,
+   │                  −CRUD de Region; QR/TOTP intactos)
    └─ ROAD-001
    (web reentra no MVP só para assinatura — ADR-006; AYDs futuros geram outras SPECs)
+   (a SPEC é a folha: o plano de implementação mora dentro dela — conventions §1)
 
 Fundação arquitetural (referenciada pelos AYDs):
    ADR-001 (topologia C4) ─┬─ ADR-002 (auth/Firebase)

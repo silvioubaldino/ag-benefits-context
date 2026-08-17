@@ -166,5 +166,3 @@ flowchart TB
     mobile), não "mobile inicia o checkout".
   - **Fallback IAP/RevenueCat** entra como adaptador da porta `PaymentGateway` (ADR-003);
     preço diferenciado no mobile é candidato a **PDR** quando acionado.
-</content>
-</invoke>

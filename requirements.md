@@ -4,10 +4,10 @@ type: requirements
 title: Requisitos do produto
 status: draft
 created: 2026-06-04
-updated: 2026-07-30
+updated: 2026-08-17
 owner: silvioubaldino
 parents: [PROD-001]
-children: [AYD-001, AYD-002, AYD-003, AYD-004, AYD-005, AYD-006, AYD-007, AYD-008]
+children: [AYD-001, AYD-002, AYD-003, AYD-004, AYD-005, AYD-006, AYD-007, AYD-008, AYD-009]
 related: [GLO, PDR-001, PDR-002, ADR-002, ADR-003, ADR-004, ADR-006]
 tags: [mvp]
 superseded_by: null
@@ -38,9 +38,9 @@ superseded_by: null
 | RF-10 | Registrar `Redemption` de forma durável e idempotente, com campos de métrica | Must | Persiste `Subscriber`×`Benefit`×`Partner`×`Region`×instante×`Savings`; leitura repetida do QR não duplica indevidamente (ver RN-04) |
 | RF-11 | `Subscriber` vê confirmação do `Redemption` com o `Savings` do uso | Must | Tela de sucesso exibe o valor economizado naquele `Redemption` |
 | RF-12 | `Subscriber` vê histórico de `Redemption`s e `Savings` acumulado | Must | "Você já economizou R$ X" = soma dos `Savings`; lista de usos com data/`Partner` |
-| RF-13 | Administração interna de `Partner`/`PartnershipContract`/`Benefit` e provisionamento do segredo TOTP do `Partner` | Must | Equipe cadastra/edita via processo interno (sem UI dedicada); cada `Partner` recebe um segredo TOTP (não por `Benefit` — ADR-004), reemissível |
+| RF-13 | Administração interna de `Partner`/`Benefit` (incluindo a vigência do `PartnershipContract`) e provisionamento do segredo TOTP do `Partner` | Must | Equipe cadastra/edita via processo interno (sem UI dedicada); a vigência é campo do `Partner` e o `Benefit` pendura nele (AYD-009); cada `Partner` recebe um segredo TOTP (não por `Benefit` — ADR-004), reemissível |
 | RF-14 | Consulta/exportação interna de métricas agregadas | Should | Negócio obtém `Redemption`s e `Savings` por `Partner`/`Region`/período (consulta/export interna, sem UI) |
-| RF-15 | `PartnerOperator` autentica e acessa o app mobile do `Partner` | Must | Login do `PartnerOperator`; acesso restrito ao seu `Partner` (`role` `partner_operator`) |
+| RF-15 | `PartnerOperator` autentica e acessa o app mobile do `Partner` | Must | Login do `PartnerOperator`; acesso restrito ao seu `Partner` via claims `role = partner_operator` + `partner_id` (AYD-009) — o operador é usuário Firebase, não entidade local |
 | RF-16 | `PartnerOperator` vê as métricas do próprio `Partner` no app | Must | App mostra `Redemption`s e `Savings` do próprio `Partner` por período; base do valor comercial da parceria |
 | RF-17 | App do `Partner` exibe o QR rotativo (TOTP) para leitura pelo `Subscriber` | Must | QR muda a cada ~30s (ADR-004); funciona sem rede do `Partner` (cálculo local a partir do segredo provisionado) |
 
@@ -58,8 +58,9 @@ superseded_by: null
 
 ## Regras de negócio
 - **RN-01:** Só `Subscriber` com `SubscriptionStatus = active` pode realizar `Redemption`.
-- **RN-02:** Um `Benefit` só entra no `Catalog` se o `PartnershipContract` do `Partner`
-  estiver vigente.
+- **RN-02:** Um `Benefit` só entra no `Catalog` se o `Partner` estiver ativo e dentro da
+  **vigência** do `PartnershipContract` (`Partner.contract_starts_at`/`contract_ends_at`,
+  ambos opcionais — ver [AYD-009](design/AYD-009-simplificacao-modelo-oferta-identidade.md)).
 - **RN-03:** Cada `Redemption` grava o `Savings` apurado **no instante do uso** (valor
   congelado, não recalculado depois).
 - **RN-04:** Política de repetição e limites antifraude (decidido em
@@ -79,8 +80,8 @@ superseded_by: null
 - **Legais:** LGPD para dados pessoais, de uso e de localização.
 - **Sem processamento da compra:** o produto não é meio de pagamento; impacta o `Savings`
   (ver RN-05).
-- **Cadastro e métricas de negócio internos:** o cadastro de `Partner`/`PartnershipContract`/
-  `Benefit` (RF-13) e as métricas agregadas cross-`Partner` do Negócio (RF-14) seguem
+- **Cadastro e métricas de negócio internos:** o cadastro de `Partner`/`Benefit` (RF-13) e as
+  métricas agregadas cross-`Partner` do Negócio (RF-14) seguem
   **internos/api-only**. O `Partner` tem **app mobile** (`PartnerOperator`) para autenticar e
   ver **as métricas do próprio `Partner`** (RF-15/RF-16); **não** há painel web nem
   self-cadastro do `Partner` no MVP.
@@ -102,8 +103,9 @@ superseded_by: null
     com áreas distintas (viabilidade técnica → TDR no `mobile`).
   - **`api`:** identidade, billing/`Subscription`, `Catalog`, registro confiável de
     `Redemption` + `Savings`, armazenamento e consulta interna de métricas.
-  - Administração **interna** de `Partner`/`PartnershipContract`/`Benefit` + geração de QR.
-  - **1 `Region`** piloto.
+  - Administração **interna** de `Partner`/`Benefit` (com a vigência no `Partner`) + geração
+    de QR.
+  - **1 `Region`** piloto (semeada por migration; sem CRUD — AYD-009).
 - **Fora (por enquanto):**
   - **Painel web** do `Partner` e **self-cadastro** do `Partner` (cadastro segue interno — RF-13).
   - Backoffice interno com UI dedicada (admin segue api-only).

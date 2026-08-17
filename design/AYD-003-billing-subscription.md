@@ -239,4 +239,3 @@ sequenceDiagram
 - **Fallback IAP/RevenueCat:** só se as lojas rejeitarem o modelo (ADR-006); não construído.
 - **Modelo "conta vs. assinante":** seguimos com `Subscription` como **entidade própria** 1:1
   e `subscription_status` derivado (resolve a questão deixada em aberto no AYD-001).
-</content>

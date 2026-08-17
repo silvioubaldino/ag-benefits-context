@@ -4,12 +4,12 @@ type: design
 title: Atribuição de role administrativa (promoção/rebaixamento de usuário)
 status: approved
 created: 2026-07-31
-updated: 2026-07-31
+updated: 2026-08-17
 owner: silvioubaldino
 affects: [api]
 parents: [REQ-001]
 children: [SPEC-008@api]
-related: [ADR-002, AYD-004, GLO]
+related: [ADR-002, AYD-004, AYD-009, GLO]
 tags: [admin, auth, role]
 superseded_by: null
 ---
@@ -18,6 +18,13 @@ superseded_by: null
 
 > Análise & Design cross-repo. Decide QUAIS repos a feature toca, o PAPEL de cada um
 > e os CONTRATOS entre eles. Daqui nascem N SPECs (uma por repo afetado).
+
+> ### ⚠️ Estendido por [AYD-009](AYD-009-simplificacao-modelo-oferta-identidade.md) (17/08/2026)
+> `PATCH /admin/users/:firebase_uid/role` passa a aceitar **`partner_id`** no body —
+> obrigatório quando `role = partner_operator`, rejeitado nos demais roles. Este endpoint virou
+> **o único caminho de provisionamento do `PartnerOperator`**, já que a tabela
+> `partner_operators` foi removida. Rebaixar um operador limpa a claim `partner_id`.
+> O restante deste documento continua válido.
 
 ## Objetivo
 

@@ -4,12 +4,12 @@ type: design
 title: Administração interna + modelo de domínio da oferta (Region/Partner/PartnershipContract/Benefit + segredo TOTP)
 status: approved
 created: 2026-06-26
-updated: 2026-07-14
+updated: 2026-08-17
 owner: silvioubaldino
 affects: [api]
 parents: [REQ-001]
 children: [SPEC-004@api]
-related: [ADR-001, ADR-002, ADR-004, PDR-001, PDR-002, GLO]
+related: [AYD-009, ADR-001, ADR-002, ADR-004, PDR-001, PDR-002, GLO]
 tags: [mvp, admin, partner, benefit, region, contract, totp]
 superseded_by: null
 ---
@@ -18,6 +18,19 @@ superseded_by: null
 
 > Análise & Design cross-repo. Decide QUAIS repos a feature toca, o PAPEL de cada um
 > e os CONTRATOS entre eles. Daqui nascem N SPECs (uma por repo afetado).
+
+> ### ⚠️ Parcialmente revisado por [AYD-009](AYD-009-simplificacao-modelo-oferta-identidade.md) (17/08/2026)
+> Três contratos deste documento **não valem mais**. Onde houver divergência, **o AYD-009 vence**:
+> - **`PartnershipContract` deixou de ser entidade.** Os endpoints `POST/GET /admin/partners/:id/contracts`
+>   e `PATCH /admin/contracts/:id` foram removidos; a vigência virou
+>   `Partner.contract_starts_at`/`contract_ends_at`.
+> - **`Benefit` pendura no `Partner`**, não no contrato: `POST/GET /admin/partners/:id/benefits`,
+>   e o campo `contract_id` virou `partner_id`.
+> - **CRUD de `Region` removido** (`POST/GET /admin/regions`); a `Region` piloto é semeada por
+>   migration e `region_id` virou opcional em `POST /admin/partners`.
+>
+> **Continua válido:** o segredo TOTP por `Partner` (geração, reemissão, `totp_provisioned`),
+> o modelo de `Partner`/`Benefit` no restante dos campos, e o `active` como soft-delete.
 
 ## Objetivo
 
@@ -277,5 +290,3 @@ sequenceDiagram
   `Redemption`/AYD-007).
 - **Auditoria das mutações admin** (quem criou/editou): trilha por log/observabilidade
   (AYD-002); se exigir versionamento de cada alteração, vira candidato a TDR@api.
-</content>
-</invoke>

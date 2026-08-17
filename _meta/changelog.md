@@ -3,7 +3,7 @@ id: META-changelog
 type: meta
 title: Changelog do repo de contexto
 status: approved
-updated: 2026-06-17
+updated: 2026-08-17
 owner: silvioubaldino
 ---
 
@@ -24,6 +24,8 @@ repo adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+- **AYD-009** — Model simplification, paying down complexity that entered the design before any usage justified it. `PartnershipContract` stops being an entity: the only part the application ever consumed was the validity window, which becomes `Partner.contract_starts_at`/`contract_ends_at`, and `Benefit` now hangs off the `Partner` directly. `PartnerOperator` stops being a persisted entity: nothing in the MVP distinguishes one operator from another of the same `Partner` (the `Redemption` never recorded one), so identity moves to a `partner_id` custom claim written through the AYD-008 role endpoint. `Region` keeps its column and its first-class role in the model but loses the CRUD over a single-row table. The rotating TOTP QR and the `Partner` app are explicitly kept. Revises AYD-004/006/008; generates SPEC-009@api and SPEC-009@mobile.
+- **Docs framework** — The PLAN document type is absorbed into the SPEC: approach, implementation steps, tests and checklist are now sections of the spec that owns them, so a feature no longer needs two documents with the same author and the same reader. Existing `PLAN-NNN` files stay in each service as history.
 - **AYD-003** — The api now owns the advertised price: adds the public `GET /plan` contract, closing the open question of who exposes the `Subscription` price to the web's storefront. Only the billing fact (price, currency, billing period) is contract — plan copy stays with the web — and the price read is the same configuration used to charge at the gateway, so the shop window cannot drift from the invoice. SPEC-003@api and SPEC-003@web go back to `review`.
 - **AYD-008** — Admin role assignment: closes the gap ADR-002 left open (custom claim `role` existed, but no contract defined who writes it). Defines `PATCH /admin/users/:firebase_uid/role` (`role: admin`-gated) to promote/demote a Firebase user's `role`; the first admin's bootstrap stays a manual, out-of-API step. Approved — implemented in the api ahead of this doc; SPEC-008@api still to be written.
 - **AYD-007** — `Redemption` design (the MVP keystone): the `Subscriber` scans the `Partner`'s rotating QR, picks a `Benefit` and confirms, and the api validates the TOTP code, eligibility (RN-01/RN-02) and anti-fraud limits (RN-04), then records an idempotent, already-confirmed `Redemption` with a frozen `Savings` (RN-03/RN-05) and serves the confirmation plus the history and accumulated savings (RF-08 to RF-12). Approved — generates SPEC-007@api and SPEC-007@mobile.

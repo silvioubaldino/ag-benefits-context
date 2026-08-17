@@ -24,17 +24,23 @@ ID = `PREFIXO-NNN`, estável (nunca muda, mesmo se o arquivo for renomeado/movid
 | ROAD | Roadmap / planejamento | contexto: `roadmap.md` | compartilhado |
 | PDR  | Product Decision Record | contexto: `product_decisions/` | compartilhado |
 | ADR  | Architecture Decision Record | contexto: `architecture_decisions/` | compartilhado, cross-repo |
-| SPEC | Especificação (parte de um repo) | serviço: `docs/specs/` | local |
-| PLAN | Plano de implementação | serviço: `docs/plans/` | local |
+| SPEC | Especificação + plano de implementação (parte de um repo) | serviço: `docs/specs/` | local |
 | TDR  | Technical Decision Record | serviço: `docs/technical_decisions/` | local |
 | GLO  | Glossário (linguagem ubíqua) | contexto: `_meta/glossary.md` | compartilhado |
+
+> **PLAN foi absorvido pela SPEC.** Até agosto/2026 o plano de implementação era um documento
+> próprio (`PLAN-NNN` em `docs/plans/`), o que dobrava a papelada por feature sem leitor
+> distinto — a mesma pessoa escrevia os dois e o PLAN só repetia a SPEC em outra ordem. Agora
+> o "o quê" e o "como" moram no **mesmo arquivo**: a SPEC ganhou as seções *Abordagem técnica*,
+> *Passos de implementação* e *Checklist*. Os `PLAN-NNN` já existentes ficam em `docs/plans/`
+> como **histórico** — não crie novos, não atualize os antigos.
 
 ## 2. Frontmatter padrão (obrigatório em todo doc)
 
 ```yaml
 ---
 id: AYD-007
-type: design             # product|requirements|design|roadmap|pdr|adr|spec|plan|tdr
+type: design             # product|requirements|design|roadmap|pdr|adr|spec|tdr
 title: Upload de mídia
 status: draft            # draft | review | approved | superseded | deprecated
 created: 2025-01-01
@@ -63,7 +69,8 @@ IDs são **globais no produto**. Para apontar um doc de outro repo, use `ID@repo
 
 - Refinamento declarado nos dois lados: `children` no pai, `parents` no filho.
 - Toda `SPEC` tem ao menos um `AYD` em `parents` (ex.: `[AYD-007@context]`).
-- **1 AYD → N SPECs**, uma por repo afetado. O AYD é a fonte dos contratos.
+- **1 AYD → N SPECs**, uma por repo afetado. O AYD é a fonte dos contratos. A SPEC é a **folha**
+  do grafo: leva o plano de implementação dentro dela e normalmente tem `children: []`.
 - **Contrato só muda no AYD/ADR (no repo de contexto).** Serviços implementam, não redefinem.
 - Termos de domínio vivem só no `GLO`; os outros docs apenas referenciam.
 
@@ -73,8 +80,7 @@ IDs são **globais no produto**. Para apontar um doc de outro repo, use `ID@repo
 |------|---------------|-----------|
 | PROD / REQ / AYD / ROAD | **Vivo** | Edita in-place, atualiza `updated`. |
 | PDR / ADR / TDR | **Append-only** | Nunca reescreve. Decisão nova substitui a antiga via `superseded_by`. |
-| SPEC | **Congela ao aprovar** | Mutável em draft/review; vira contrato quando `approved`. |
-| PLAN | **Efêmero** | Documento de trabalho; após executado, é histórico. |
+| SPEC | **Congela ao aprovar** | Mutável em draft/review; vira contrato quando `approved`. As seções de plano (§*Passos*, §*Checklist*) são a parte **efêmera**: depois de executadas viram histórico e não invalidam o congelamento do resto. |
 | GLO | Vivo | Edita in-place. |
 
 Auditoria dos docs vivos mora no **git + changelog**.
@@ -90,7 +96,7 @@ Ao alterar um doc:
 ## 8. Idioma (documentação vs. código)
 
 - **Documentação é escrita em português.** Toda prosa dos docs (PROD, REQ, AYD, ROAD,
-  PDR, ADR, SPEC, PLAN, TDR) é em PT-BR.
+  PDR, ADR, SPEC, TDR) é em PT-BR.
 - **Código é escrito em inglês.** Logo, **nomes de entidades de domínio, campos, enums,
   endpoints e eventos são definidos em inglês** — eles atravessam para o código.
 - Por isso o **GLO define o termo canônico em inglês** (o nome que vira código), com a
@@ -119,8 +125,8 @@ Vale para o `changelog.md` de cada repo.
 - **Uma linha por PR:** cada PR gera **uma única linha** no changelog, que resume o que o PR
   entrega — generalista e focada no que foi implementado, **sem detalhes de implementação nem
   do framework de docs**; referencie o PR (ex.: `[PR#02](url)`). Sem subdivisão por categoria.
-  A linha **pode ignorar a adição de SPEC/PLAN** (são rastreados pelos próprios arquivos/git):
-  descreva o que foi entregue; se o PR só adiciona SPEC/PLAN, resuma a feature que eles abrem.
+  A linha **pode ignorar a adição de SPEC** (são rastreadas pelos próprios arquivos/git):
+  descreva o que foi entregue; se o PR só adiciona SPEC, resuma a feature que ela abre.
 
 ## 10. Convenções de diagramas
 

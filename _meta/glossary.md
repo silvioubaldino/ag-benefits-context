@@ -24,8 +24,8 @@ mobile "falarem a mesma língua": um termo, uma definição.
 | Termo (canônico) | Definição | Sinônimos a evitar |
 |------------------|-----------|--------------------|
 | **`Subscriber`** | Usuário final pessoa física com uma `Subscription` ativa, que acessa o app e realiza `Redemption`s. (PT: "assinante") | "user", "customer", "member", "usuário" |
-| **`Partner`** | Comércio (estabelecimento/marca) com um `PartnershipContract` vigente, que disponibiliza `Benefit`s no app. (PT: "parceiro") | "store", "merchant", "advertiser", "loja" |
-| **`PartnerOperator`** | Pessoa do `Partner` que valida/confirma um `Redemption` no ponto de atendimento (quando a modalidade exige). (PT: "operador do parceiro") | "attendant", "cashier", "atendente" |
+| **`Partner`** | Comércio (estabelecimento/marca) com `PartnershipContract` vigente, que disponibiliza `Benefit`s no app. **É a entidade que carrega a vigência** (`contract_starts_at`/`contract_ends_at`) e o segredo TOTP. (PT: "parceiro") | "store", "merchant", "advertiser", "loja" |
+| **`PartnerOperator`** | Pessoa do `Partner` que opera o app do `Partner` no ponto de atendimento — exibe o QR rotativo que o `Subscriber` lê (ADR-004). **Não é entidade persistida** (AYD-009): é o usuário Firebase com `role = partner_operator` e claim `partner_id`. Não confirma o `Redemption` — quem valida é a `api`. (PT: "operador do parceiro") | "attendant", "cashier", "atendente" |
 
 ## Negócio
 
@@ -33,14 +33,14 @@ mobile "falarem a mesma língua": um termo, uma definição.
 |------------------|-----------|--------------------|
 | **`Subscription`** | Vínculo de pagamento recorrente (mensal, preço fixo) que dá ao `Subscriber` o direito de uso do app e de realizar `Redemption`s. Tem um `SubscriptionStatus`. (PT: "assinatura") | "plan" (plano é a configuração; subscription é o vínculo), "mensalidade" |
 | **`SubscriptionStatus`** | Estado do vínculo: `pending` (criada, aguardando confirmação do 1º pagamento), `active`, `past_due`, `canceled`. Só `active` habilita `Redemption`. (PT: "status da assinatura") | "situação", "state" genérico |
-| **`PartnershipContract`** | Acordo comercial com um `Partner`. Define quais `Benefit`s o `Partner` disponibiliza e a vigência. No MVP, sem cobrança financeira ao `Partner` (troca de engajamento). (PT: "contrato de parceria") | "partnership" (informal), "agreement", "convênio" |
-| **`Region`** | Recorte geográfico de operação (cidade/região piloto) onde `Subscriber`s e `Partner`s coexistem. Unidade de densidade do marketplace. (PT: "praça") | "area", "location", "local", "branch" |
+| **`PartnershipContract`** | Acordo comercial com um `Partner`: define quais `Benefit`s ele disponibiliza e a vigência. No MVP, sem cobrança financeira ao `Partner` (troca de engajamento). **Não é entidade no modelo** (AYD-009): o documento assinado mora no processo comercial, e a única parte que a aplicação conhece é a **vigência**, materializada em `Partner.contract_starts_at`/`contract_ends_at` (base da RN-02). (PT: "contrato de parceria") | "partnership" (informal), "agreement", "convênio" |
+| **`Region`** | Recorte geográfico de operação (cidade/região piloto) onde `Subscriber`s e `Partner`s coexistem. Unidade de densidade do marketplace; dimensão de primeira classe (RNF-08), gravada em `Partner` e `Redemption`. No MVP existe **uma** `Region` ativa, semeada por migration — sem CRUD (AYD-009). (PT: "praça") | "area", "location", "local", "branch" |
 
 ## Oferta e uso (núcleo de métricas)
 
 | Termo (canônico) | Definição | Sinônimos a evitar |
 |------------------|-----------|--------------------|
-| **`Benefit`** | A vantagem/desconto que um `Partner` disponibiliza ao `Subscriber`, definida no `PartnershipContract`. É a **oferta** exibida no app. (PT: "benefício") | **"coupon"/"cupom"** (cupom é apenas um possível mecanismo de resgate — a definir), "promotion", "offer", "product" |
+| **`Benefit`** | A vantagem/desconto que um `Partner` disponibiliza ao `Subscriber`, acordada no `PartnershipContract`. É a **oferta** exibida no app e pendura direto no `Partner` (`partner_id` — AYD-009). (PT: "benefício") | **"coupon"/"cupom"** (cupom é apenas um possível mecanismo de resgate — a definir), "promotion", "offer", "product" |
 | **`Redemption`** | **Evento** registrado de um `Subscriber` utilizando um `Benefit` em um `Partner`, num instante. É o fato central que gera métricas. Captura, no mínimo: `Subscriber`, `Benefit`, `Partner`, `Region`, instante e `Savings`. (PT: "resgate") | "use", "usage", "check-in", "uso" |
 | **`Savings`** | Valor em R$ atribuído a um `Redemption` (quanto o `Subscriber` deixou de pagar). Base do indicador "você já economizou R$ X". (PT: "economia") | "discount" (desconto é a regra; Savings é o valor realizado), "economia" como campo |
 | **`Catalog`** | Conjunto de `Benefit`s visíveis a um `Subscriber`, filtrado por `Region` e `SubscriptionStatus`. (PT: "catálogo") | "showcase", "vitrine", "lista de ofertas" |

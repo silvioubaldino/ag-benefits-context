@@ -4,12 +4,12 @@ type: design
 title: App do Partner — auth do PartnerOperator + exibição do QR rotativo (TOTP)
 status: approved
 created: 2026-07-28
-updated: 2026-07-30
+updated: 2026-08-17
 owner: silvioubaldino
 affects: [api, mobile]
 parents: [REQ-001]
 children: [SPEC-006@api, SPEC-006@mobile]
-related: [AYD-004, ADR-001, ADR-002, ADR-004, PDR-002, GLO]
+related: [AYD-004, AYD-009, ADR-001, ADR-002, ADR-004, PDR-002, GLO]
 tags: [mvp, partner, partner_operator, totp, qr, auth]
 superseded_by: null
 ---
@@ -18,6 +18,19 @@ superseded_by: null
 
 > Análise & Design cross-repo. Decide QUAIS repos a feature toca, o PAPEL de cada um
 > e os CONTRATOS entre eles. Daqui nascem N SPECs (uma por repo afetado).
+
+> ### ⚠️ Auth revisada por [AYD-009](AYD-009-simplificacao-modelo-oferta-identidade.md) (17/08/2026)
+> **O QR rotativo (TOTP) e o app do `Partner` seguem valendo integralmente** — a decisão do
+> ADR-004 foi reafirmada. O que mudou é só **como a identidade do operador é persistida**:
+> - **`PartnerOperator` deixou de ser entidade.** A tabela `partner_operators` e os endpoints
+>   `POST/GET /admin/partners/:id/operators` e `PATCH /admin/operators/:id` foram removidos.
+> - **A identidade virou claim:** `operator_id` → **`partner_id`**, gravada por
+>   `PATCH /admin/users/:firebase_uid/role` (AYD-008 estendido). A pessoa operadora é o usuário
+>   Firebase; não há mais cópia local dela.
+> - **`GET /partner/me` perdeu o bloco `operator`** — passa a devolver só `{ partner: {...} }`.
+>
+> **Inalterado:** `GET /partner/me/totp-secret`, o cálculo local do código TOTP, a rotação de
+> ~30s, a tolerância de ±1 janela e a reemissão do segredo.
 
 ## Objetivo
 
@@ -279,5 +292,3 @@ sequenceDiagram
   apps concordam no parse), **não** necessariamente um deep link registrado no SO — a leitura
   é por câmera in-app no `Subscriber` (AYD-007). Registrar o scheme como deep link real é
   decisão de app → TDR@mobile se/quando fizer sentido.
-</content>
-</invoke>

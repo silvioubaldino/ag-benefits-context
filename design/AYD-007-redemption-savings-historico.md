@@ -320,8 +320,8 @@ sequenceDiagram
 ## Fora de escopo / questões em aberto
 
 - **Métricas (RF-14/RF-16):** as métricas do próprio `Partner` no app e as agregadas api-only
-  são do **AYD-009** (ROAD "Later"; o número 008 foi ocupado pela atribuição de `role`
-  administrativa). Este AYD só **gera o dado** — e o modelo do `Redemption`
+  são do **AYD-010** (ROAD "Later"; o 008 ficou com a atribuição de `role` e o 009 com a
+  simplificação do modelo). Este AYD só **gera o dado** — e o modelo do `Redemption`
   (com `partner_id`/`region_id` denormalizados) já é desenhado para elas.
 - **Idempotência estrita por código (`(Subscriber, totp_code)`):** adotada a chave do ADR-004
   (com `Benefit`). A leitura estrita — um único `Redemption` por código escaneado, obrigando novo
@@ -346,4 +346,3 @@ sequenceDiagram
   SLO apertar, materializar o acumulado é **TDR@api**, não mudança de contrato.
 - **SPECs:** `SPEC-007@api` e `SPEC-007@mobile` ainda **não existem** — são o próximo passo da
   cascata (declaradas em `children` como intenção de design).
-</content>
