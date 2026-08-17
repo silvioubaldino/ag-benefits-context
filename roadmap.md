@@ -4,11 +4,11 @@ type: roadmap
 title: Roadmap
 status: draft
 created: 2025-01-01
-updated: 2026-07-31
+updated: 2026-08-14
 owner: silvioubaldino
 parents: [PROD-001]
 children: []
-related: [REQ-001, AYD-001, AYD-002, ADR-003, ADR-004, ADR-006, GLO]
+related: [REQ-001, AYD-001, AYD-002, AYD-009, ADR-003, ADR-004, ADR-006, GLO]
 tags: [mvp, planning, pilot]
 superseded_by: null
 ---
@@ -44,10 +44,11 @@ central (`Redemption`), **(3)** métricas e prontidão de piloto.
 | **Next** | Oferta + núcleo de valor (`Redemption`) | **AYD-004** Admin interno + modelo de domínio (`Partner`/`PartnershipContract`/`Benefit`/`Region` + provisionamento do segredo TOTP) · **AYD-005** `Catalog` por `Region` · **AYD-006** App do `Partner` (auth `PartnerOperator` + exibição do QR TOTP) · **AYD-007** `Redemption` + confirmação/`Savings` + histórico | RF-13 · RF-05/06 · RF-15/17 · RF-08/09/10/11/12 | api, mobile |
 | **Later** | Métricas, refinamento e prontidão de piloto | **AYD-009** Métricas (do próprio `Partner` no app + agregadas api-only) · Busca/filtro do `Catalog` · Endurecimento LGPD (consentimento — candidato a **PDR**), retenção/custo de telemetria (**TDR**) e calibração de SLO/alertas | RF-16/14 · RF-07 · RNF-04/05/06 | api, mobile |
 
-> `web` reentra no MVP só para a assinatura (ADR-006). AYD-003..007 já existem; o AYD de métricas
-> (item #8) ainda não — criá-lo faz parte do entregável, e ele leva o número **AYD-009**, já que o
-> 008 foi ocupado pela atribuição de `role` administrativa. Contrato muda só aqui (AYD/ADR);
-> serviços implementam (regra cross-repo).
+> `web` reentra no MVP só para a assinatura (ADR-006). AYD-003..009 já existem — o de métricas
+> (item #8) levou o número **AYD-009**, já que o 008 foi ocupado pela atribuição de `role`
+> administrativa; ele está em **draft**, aguardando revisão, e deixou `MRR`/churn de fora por
+> dependerem de um **PDR** de definição (ver REQ-001, questões em aberto). Contrato muda só aqui
+> (AYD/ADR); serviços implementam (regra cross-repo).
 
 ## Estimativas por entregável
 
@@ -60,7 +61,7 @@ central (`Redemption`), **(3)** métricas e prontidão de piloto.
 | 5 | AYD-005 `Catalog` por `Region` | M | 1 | 08/09 – 19/09 | #4 (dados de `Partner`/`Benefit`) |
 | 6 | AYD-006 App do `Partner` (auth + QR TOTP) | M | 1 | 22/09 – 03/10 | #4; ADR-002/004; **TDR app único×dois** |
 | 7 | AYD-007 `Redemption` + `Savings` + histórico | L | 2 | 06/10 – 31/10 | #3,#5,#6; ADR-004; PDR-001/002 |
-| 8 | AYD-009 Métricas (`Partner` + agregadas) | M | 1 | 03/11 – 14/11 | #7 (dados de `Redemption`) |
+| 8 | [AYD-009](design/AYD-009-metricas-partner-e-agregadas.md) Métricas (`Partner` + agregadas) | M | 1 | 03/11 – 14/11 | #7 (dados de `Redemption`) |
 | 9 | Busca/filtro `Catalog` (RF-07, *Should*) | S | 0,5 | 17/11 – 21/11 | #5 |
 | 10 | LGPD/retenção/SLO (endurecimento) | S | 0,5–1 | 24/11 – 05/12 | #2,#3 (transversal) |
 

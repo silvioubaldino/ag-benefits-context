@@ -4,12 +4,12 @@ type: design
 title: App do Partner — auth do PartnerOperator + exibição do QR rotativo (TOTP)
 status: approved
 created: 2026-07-28
-updated: 2026-07-30
+updated: 2026-08-14
 owner: silvioubaldino
 affects: [api, mobile]
 parents: [REQ-001]
 children: [SPEC-006@api, SPEC-006@mobile]
-related: [AYD-004, ADR-001, ADR-002, ADR-004, PDR-002, GLO]
+related: [AYD-004, AYD-009, ADR-001, ADR-002, ADR-004, PDR-002, GLO]
 tags: [mvp, partner, partner_operator, totp, qr, auth]
 superseded_by: null
 ---
@@ -44,7 +44,7 @@ e a `api`, que **recalcula** o `totp_code` no `Redemption` — ADR-004); (4) a *
 do app mobile** (login + tela do QR).
 
 **Fora de escopo:** o registro do `Redemption` em si (AYD-007); **as métricas do próprio
-`Partner` no app (RF-16)** → AYD-008 (ROAD "Later"); qualquer CRUD da oferta (admin, AYD-004);
+`Partner` no app (RF-16)** → AYD-009 (ROAD "Later"); qualquer CRUD da oferta (admin, AYD-004);
 `web` (não afetado).
 
 ## Repos afetados e papéis
@@ -258,8 +258,9 @@ sequenceDiagram
 
 ## Fora de escopo / questões em aberto
 
-- **Métricas do próprio `Partner` no app (RF-16):** deliberadamente **fora** — AYD-008 (ROAD
-  "Later"). Aqui o app do `Partner` só autentica e exibe o QR.
+- **Métricas do próprio `Partner` no app (RF-16):** deliberadamente **fora** — **AYD-009**
+  (ROAD "Later"; o número 008 foi ocupado pela atribuição de `role` administrativa). Aqui o
+  app do `Partner` só autentica e exibe o QR.
 - **Registro do `Redemption` (RF-08/09/10):** o consumo do QR pelo `Subscriber` e o registro
   são do **AYD-007**; este AYD só define o **payload** e **produz** o QR.
 - **Entrega do segredo: re-buscável × one-time.** Decidido **re-buscável** (auth como gate).
